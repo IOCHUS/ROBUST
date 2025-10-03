@@ -28,8 +28,7 @@ const Footer: React.FC = () => {
               </button>
             </div>
             <div className="text-center">
-              <div className="text-lg font-medium text-gray-200 tracking-wide">IOCHUS</div>
-              <div className="text-sm text-gray-400 font-light">AI Growth Technologist</div>
+              <div className="text-lg font-medium text-gray-200 tracking-wide">ROBUST<span className="text-amber-400">.</span></div>
             </div>
           </div>
         </div>
