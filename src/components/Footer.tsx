@@ -5,10 +5,6 @@ const Footer: React.FC = () => {
   return (
     <footer className="py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 bg-black text-white">
       <div className="max-w-7xl mx-auto text-center">
-        <div className="text-3xl font-bold mb-8">
-          ROBUST<span className="text-amber-400">.</span>
-        </div>
-
         <div className="mb-8">
           <div className="flex flex-col items-center space-y-4">
             <div className="relative group">
@@ -28,7 +24,7 @@ const Footer: React.FC = () => {
               </button>
             </div>
             <div className="text-center">
-              <div className="text-lg font-medium text-gray-200 tracking-wide">ROBUST<span className="text-amber-400">.</span></div>
+              <div className="text-3xl font-bold text-gray-200 tracking-wide">ROBUST<span className="text-amber-400">.</span></div>
             </div>
           </div>
         </div>
