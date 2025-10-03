@@ -1,57 +1,89 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-      isScrolled ? 'bg-black/90 backdrop-blur-lg py-4' : 'bg-transparent py-6'
-    }`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <div className="text-2xl font-bold text-white">
-          ROBUST<span className="text-amber-400">.</span>
-        </div>
-        
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="#about" className="text-white/80 hover:text-white transition-colors">About</a>
-          <a href="#modules" className="text-white/80 hover:text-white transition-colors">Modules</a>
-          <a href="#results" className="text-white/80 hover:text-white transition-colors">Results</a>
-          <a href="#guarantee" className="text-white/80 hover:text-white transition-colors">Guarantee</a>
-        </div>
+    <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          <a href="/" className="flex items-center space-x-3">
+            <span className="text-xl font-bold text-white">
+              ROBUST<span className="text-amber-400">.</span>
+            </span>
+          </a>
 
-        <div className="flex items-center space-x-4">
-          <div className="hidden md:flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1">
-            <img src="https://flagcdn.com/w20/gb.png" alt="EN" className="w-4 h-3" />
-            <span className="text-white text-sm">EN</span>
+          <div className="hidden md:flex items-center space-x-8">
+            <a
+              href="#about"
+              className="text-gray-300 hover:text-amber-400 transition-colors"
+            >
+              About
+            </a>
+            <a
+              href="#modules"
+              className="text-gray-300 hover:text-amber-400 transition-colors"
+            >
+              Modules
+            </a>
+            <a
+              href="#results"
+              className="text-gray-300 hover:text-amber-400 transition-colors"
+            >
+              Results
+            </a>
+            <button
+              onClick={() => window.location.href = '#enroll'}
+              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/25 text-white font-medium"
+            >
+              Enroll Now
+            </button>
           </div>
-          
+
           <button
+            className="md:hidden text-gray-300"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-white"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-black/95 backdrop-blur-lg">
-          <div className="px-6 py-4 space-y-4">
-            <a href="#about" className="block text-white/80 hover:text-white transition-colors">About</a>
-            <a href="#modules" className="block text-white/80 hover:text-white transition-colors">Modules</a>
-            <a href="#results" className="block text-white/80 hover:text-white transition-colors">Results</a>
-            <a href="#guarantee" className="block text-white/80 hover:text-white transition-colors">Guarantee</a>
+        <div className="md:hidden bg-black/95 backdrop-blur-lg border-t border-gray-800/50">
+          <div className="px-4 py-6 space-y-4">
+            <a
+              href="#about"
+              className="block text-gray-300 hover:text-amber-400 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              About
+            </a>
+            <a
+              href="#modules"
+              className="block text-gray-300 hover:text-amber-400 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Modules
+            </a>
+            <a
+              href="#results"
+              className="block text-gray-300 hover:text-amber-400 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Results
+            </a>
+            <button
+              onClick={() => {
+                window.location.href = '#enroll';
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-6 py-3 rounded-full transition-all duration-300 text-white font-medium"
+            >
+              Enroll Now
+            </button>
           </div>
         </div>
       )}
