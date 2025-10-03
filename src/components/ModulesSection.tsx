@@ -39,14 +39,19 @@ const ModulesSection = () => {
 
   return (
     <section id="modules" className="relative py-32 overflow-hidden">
-      {/* Dark Luxury Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'linear-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(251, 191, 36, 0.1) 1px, transparent 1px)',
-            backgroundSize: '100px 100px'
-          }}></div>
+      {/* Elegant Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+        {/* Floating Particles */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/3 w-2 h-2 bg-amber-400 rounded-full animate-ping opacity-60"></div>
+          <div className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-orange-400 rounded-full animate-ping opacity-40" style={{ animationDelay: '0.5s' }}></div>
+          <div className="absolute bottom-1/3 left-1/4 w-2 h-2 bg-amber-500 rounded-full animate-ping opacity-50" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/2 right-1/3 w-1 h-1 bg-yellow-400 rounded-full animate-ping opacity-70" style={{ animationDelay: '1.5s' }}></div>
         </div>
+
+        {/* Gradient Orbs */}
+        <div className="absolute top-1/3 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/3 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
@@ -68,28 +73,28 @@ const ModulesSection = () => {
             return (
               <div
                 key={index}
-                className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm border border-white/5 hover:border-amber-500/30 transition-all duration-500 transform hover:-translate-y-2"
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 backdrop-blur-md border border-slate-600/40 hover:border-amber-500/60 transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-amber-500/20"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={module.image}
                     alt={module.title}
-                    className="w-full h-full object-cover opacity-40 group-hover:opacity-50 group-hover:scale-110 transition-all duration-700"
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
 
                   {/* Icon */}
                   <div className="absolute top-4 left-4">
-                    <div className="w-12 h-12 bg-amber-500/10 backdrop-blur-sm rounded-lg flex items-center justify-center border border-amber-500/20">
-                      <IconComponent className="text-amber-500" size={20} />
+                    <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/40 group-hover:scale-110 transition-transform duration-300">
+                      <IconComponent className="text-white" size={24} />
                     </div>
                   </div>
 
                   {/* Module Number */}
                   <div className="absolute top-4 right-4">
-                    <div className="w-8 h-8 bg-amber-500/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-amber-500/20">
-                      <span className="text-amber-500 font-bold text-sm">{index + 1}</span>
+                    <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-amber-500/30">
+                      <span className="text-amber-400 font-bold text-lg">{index + 1}</span>
                     </div>
                   </div>
                 </div>
@@ -97,8 +102,8 @@ const ModulesSection = () => {
                 {/* Content */}
                 <div className="p-6">
                   <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{module.title}</h3>
-                  <p className="text-amber-500 font-medium mb-3 text-sm">{module.subtitle}</p>
-                  <p className="text-gray-400 text-sm leading-relaxed font-light">{module.description}</p>
+                  <p className="text-amber-400 font-semibold mb-3 text-sm">{module.subtitle}</p>
+                  <p className="text-gray-300 text-sm leading-relaxed">{module.description}</p>
                 </div>
               </div>
             );
