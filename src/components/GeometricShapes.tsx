@@ -2,7 +2,7 @@ import React from 'react';
 
 const GeometricShapes = () => {
   return (
-    <div className="absolute inset-0 pointer-events-none z-[5] overflow-visible">
+    <div className="absolute inset-0 pointer-events-none z-[15] overflow-visible">
 
       {/* Hero Section - Top */}
       <div className="absolute top-32 right-20 w-96 h-96">

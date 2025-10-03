@@ -23,7 +23,7 @@ function App() {
       <Navigation />
       <div className="relative">
         <GeometricShapes />
-        <div className="relative z-10">
+        <div className="relative">
           <HeroSection />
           <CorePillars />
           <ModulesSection />
