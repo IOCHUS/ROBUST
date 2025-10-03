@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const HeroSection = () => {
   return (
@@ -44,31 +44,24 @@ const HeroSection = () => {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
           <button className="group bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-4 px-8 rounded-full text-lg shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center">
-            START YOUR TRANSFORMATION
+            START YOUR JOURNEY
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
-          </button>
-          
-          <button className="group flex items-center text-white hover:text-amber-400 transition-colors">
-            <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mr-3 group-hover:bg-amber-400/20 transition-colors">
-              <Play size={16} className="ml-0.5" />
-            </div>
-            Watch Preview
           </button>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-400 mb-2">10K+</div>
+            <div className="text-3xl font-bold text-amber-400 mb-2">1K+</div>
             <div className="text-gray-400 text-sm">Students Transformed</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-400 mb-2">$2M+</div>
-            <div className="text-gray-400 text-sm">Generated Revenue</div>
+            <div className="text-3xl font-bold text-amber-400 mb-2">78%</div>
+            <div className="text-gray-400 text-sm">Success Goal</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-amber-400 mb-2">98%</div>
-            <div className="text-gray-400 text-sm">Success Rate</div>
+            <div className="text-gray-400 text-sm">Improvement Life Rate</div>
           </div>
         </div>
       </div>
