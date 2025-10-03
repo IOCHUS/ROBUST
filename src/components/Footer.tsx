@@ -1,66 +1,41 @@
 import React from 'react';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
-    <footer className="bg-black text-white py-16">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
-          {/* Brand */}
-          <div className="md:col-span-2">
-            <div className="text-3xl font-bold mb-4">
-              ROBUST<span className="text-amber-400">.</span>
+    <footer className="py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 bg-black/50">
+      <div className="max-w-7xl mx-auto text-center">
+        <div className="mb-12 fade-in">
+          <div className="flex flex-col items-center space-y-5">
+            <div className="relative group">
+              <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 rounded-full blur opacity-60 group-hover:opacity-90 transition-all duration-700 group-hover:duration-300 animate-pulse"></div>
+              <button
+                onClick={() => window.open('https://www.linkedin.com/in/iochus-automation-25a855383/', '_blank')}
+                className="relative w-28 h-28 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center text-white font-bold hover:scale-105 transition-all duration-500 shadow-xl border border-gray-700 group-hover:border-blue-400/50 overflow-hidden"
+              >
+                <img
+                  src="/src/img/IOCHUS.jpg"
+                  alt="IOCHUS"
+                  className="w-24 h-24 rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md border border-blue-400/30">
+                  <ExternalLink className="w-3 h-3 text-white" />
+                </div>
+              </button>
             </div>
-            <p className="text-gray-400 leading-relaxed max-w-md">
-              Transform your reality with the most comprehensive wealth and life optimization masterclass. 
-              Your journey to financial freedom starts here.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li><a href="#about" className="text-gray-400 hover:text-white transition-colors">About</a></li>
-              <li><a href="#modules" className="text-gray-400 hover:text-white transition-colors">Modules</a></li>
-              <li><a href="#results" className="text-gray-400 hover:text-white transition-colors">Results</a></li>
-              <li><a href="#guarantee" className="text-gray-400 hover:text-white transition-colors">Guarantee</a></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Contact</h4>
-            <div className="space-y-3">
-              <div className="flex items-center text-gray-400">
-                <Mail size={16} className="mr-2" />
-                <span className="text-sm">hello@robust.com</span>
-              </div>
-              <div className="flex items-center text-gray-400">
-                <Phone size={16} className="mr-2" />
-                <span className="text-sm">+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center text-gray-400">
-                <MapPin size={16} className="mr-2" />
-                <span className="text-sm">Global Online</span>
-              </div>
+            <div className="text-center">
+              <div className="text-xl font-medium text-gray-200 mb-1 tracking-wide">IOCHUS</div>
+              <div className="text-sm text-gray-400 font-light">AI Growth Technologist</div>
             </div>
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2024 ROBUST MasterClass. All rights reserved.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Cookie Policy</a>
-            </div>
-          </div>
-        </div>
+        <p className="text-gray-400 mb-4 text-base font-light tracking-wide">
+          Empowering businesses with intelligent AI automation solutions
+        </p>
+        <p className="text-gray-500 text-sm font-light">
+          © 2025 Automagically. All rights reserved.
+        </p>
       </div>
     </footer>
   );
