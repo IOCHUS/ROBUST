@@ -10,13 +10,6 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40"></div>
       </div>
 
-      {/* Animated Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-white rounded-full animate-ping"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-ping delay-500"></div>
-      </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
         {/* Badge */}
@@ -38,7 +31,7 @@ const HeroSection = () => {
         </p>
         
         <p className="text-3xl md:text-4xl font-bold text-white mb-12">
-          <span className="text-amber-400">ROBUST</span> - Hurry Up or Stay Where You Are
+          <span className="text-amber-400">ROBUST</span> - Your Reality Awaits Action
         </p>
 
         {/* CTA Buttons */}
