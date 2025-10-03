@@ -4,7 +4,7 @@ const GeometricShapes = () => {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       {/* Tribal Growth Arrow - Top Left */}
-      <div className="absolute top-32 left-12 w-64 h-48 opacity-10">
+      <div className="absolute top-32 left-12 w-64 h-48 opacity-30">
         <svg viewBox="0 0 200 150" className="w-full h-full">
           <defs>
             <linearGradient id="tribal-gradient-1" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -25,7 +25,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* Tribal Mountain/Peak Symbol - Represents Reaching Goals */}
-      <div className="absolute top-1/4 right-16 w-40 h-40 opacity-8">
+      <div className="absolute top-1/4 right-16 w-40 h-40 opacity-25">
         <svg viewBox="0 0 120 120" className="w-full h-full">
           <defs>
             <linearGradient id="peak-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -45,7 +45,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* Tribal Circular Pattern - Wholeness & Balance */}
-      <div className="absolute bottom-1/3 left-16 w-56 h-56 opacity-8">
+      <div className="absolute bottom-1/3 left-16 w-56 h-56 opacity-20">
         <svg viewBox="0 0 200 200" className="w-full h-full animate-spin" style={{ animationDuration: '40s' }}>
           <defs>
             <linearGradient id="circle-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -70,7 +70,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* Tribal Connection Lines - Right Side */}
-      <div className="absolute top-1/2 right-24 w-48 h-64 opacity-8">
+      <div className="absolute top-1/2 right-24 w-48 h-64 opacity-25">
         <svg viewBox="0 0 150 200" className="w-full h-full">
           <defs>
             <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -90,7 +90,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* Tribal Strength Symbol - Bottom Right */}
-      <div className="absolute bottom-32 right-20 w-32 h-32 opacity-8">
+      <div className="absolute bottom-32 right-20 w-32 h-32 opacity-25">
         <svg viewBox="0 0 100 100" className="w-full h-full">
           <defs>
             <linearGradient id="strength-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -108,7 +108,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* Tribal Step Pattern - Left Side Middle */}
-      <div className="absolute top-1/2 left-20 w-40 h-56 opacity-8">
+      <div className="absolute top-1/2 left-20 w-40 h-56 opacity-30">
         <svg viewBox="0 0 120 180" className="w-full h-full">
           <defs>
             <linearGradient id="steps-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
