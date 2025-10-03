@@ -20,16 +20,18 @@ function App() {
   return (
     <div className="min-h-screen relative">
       <BackgroundEffects />
-      <GeometricShapes />
-      <div className="relative z-10">
-        <Navigation />
-        <HeroSection />
-        <CorePillars />
-        <ModulesSection />
-        <TransformationSection />
-        <GuaranteeSection />
-        <Footer />
+      <Navigation />
+      <div className="relative">
+        <GeometricShapes />
+        <div className="relative z-10">
+          <HeroSection />
+          <CorePillars />
+          <ModulesSection />
+          <TransformationSection />
+          <GuaranteeSection />
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }
