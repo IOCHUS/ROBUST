@@ -38,54 +38,67 @@ const ModulesSection = () => {
   ];
 
   return (
-    <section id="modules" className="py-24 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+    <section id="modules" className="relative py-32 overflow-hidden">
+      {/* Dark Luxury Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'linear-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(251, 191, 36, 0.1) 1px, transparent 1px)',
+            backgroundSize: '100px 100px'
+          }}></div>
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <div className="inline-block mb-4">
+            <div className="h-px w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-6"></div>
+          </div>
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
             Master These 4 Core Modules
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto font-light">
             Each module is designed to build upon the previous one, creating a comprehensive system for wealth and success
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {modules.map((module, index) => {
             const IconComponent = module.icon;
             return (
               <div
                 key={index}
-                className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+                className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm border border-white/5 hover:border-amber-500/30 transition-all duration-500 transform hover:-translate-y-2"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={module.image}
                     alt={module.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover opacity-40 group-hover:opacity-50 group-hover:scale-110 transition-all duration-700"
                   />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${module.gradient} opacity-80`}></div>
-                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+
                   {/* Icon */}
                   <div className="absolute top-4 left-4">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                      <IconComponent className="text-white" size={24} />
+                    <div className="w-12 h-12 bg-amber-500/10 backdrop-blur-sm rounded-lg flex items-center justify-center border border-amber-500/20">
+                      <IconComponent className="text-amber-500" size={20} />
                     </div>
                   </div>
 
                   {/* Module Number */}
                   <div className="absolute top-4 right-4">
-                    <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">{index + 1}</span>
+                    <div className="w-8 h-8 bg-amber-500/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-amber-500/20">
+                      <span className="text-amber-500 font-bold text-sm">{index + 1}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Content */}
                 <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{module.title}</h3>
-                  <p className="text-amber-600 font-semibold mb-3">{module.subtitle}</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">{module.description}</p>
+                  <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{module.title}</h3>
+                  <p className="text-amber-500 font-medium mb-3 text-sm">{module.subtitle}</p>
+                  <p className="text-gray-400 text-sm leading-relaxed font-light">{module.description}</p>
                 </div>
               </div>
             );
