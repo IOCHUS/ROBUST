@@ -2,10 +2,10 @@ import React from 'react';
 
 const GeometricShapes = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
 
       {/* ANIMATED TRIBAL GROWTH PATH - Left Side */}
-      <div className="absolute top-20 left-8 w-80 h-screen opacity-70">
+      <div className="absolute top-20 left-8 w-80 h-screen opacity-100">
         <svg viewBox="0 0 200 800" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
           <defs>
             <linearGradient id="growth-path" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -74,7 +74,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* TRIBAL STRENGTH MANDALA - Top Right */}
-      <div className="absolute top-32 right-12 w-96 h-96 opacity-60">
+      <div className="absolute top-32 right-12 w-96 h-96 opacity-100">
         <svg viewBox="0 0 300 300" className="w-full h-full">
           <defs>
             <linearGradient id="mandala-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -121,7 +121,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* TRIBAL MOUNTAIN ASCENT - Right Side Middle */}
-      <div className="absolute top-1/2 right-16 w-64 h-80 opacity-65">
+      <div className="absolute top-1/2 right-16 w-64 h-80 opacity-100">
         <svg viewBox="0 0 200 250" className="w-full h-full">
           <defs>
             <linearGradient id="mountain-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
@@ -181,7 +181,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* TRIBAL ENERGY SPIRAL - Bottom Left */}
-      <div className="absolute bottom-20 left-12 w-72 h-72 opacity-60">
+      <div className="absolute bottom-20 left-12 w-72 h-72 opacity-100">
         <svg viewBox="0 0 250 250" className="w-full h-full">
           <defs>
             <linearGradient id="spiral-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -217,7 +217,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* TRIBAL TRANSFORMATION ARROWS - Scattered */}
-      <div className="absolute top-1/3 left-1/4 w-32 h-32 opacity-50">
+      <div className="absolute top-1/3 left-1/4 w-32 h-32 opacity-100">
         <svg viewBox="0 0 100 100" className="w-full h-full">
           <defs>
             <linearGradient id="arrow1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -237,7 +237,7 @@ const GeometricShapes = () => {
         </svg>
       </div>
 
-      <div className="absolute bottom-1/3 right-1/3 w-32 h-32 opacity-50">
+      <div className="absolute bottom-1/3 right-1/3 w-32 h-32 opacity-100">
         <svg viewBox="0 0 100 100" className="w-full h-full">
           <path d="M80,80 L20,20 M20,20 L35,30 M20,20 L30,35"
                 stroke="rgb(251, 191, 36)"
