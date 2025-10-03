@@ -2,7 +2,7 @@ import React from 'react';
 
 const GeometricShapes = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none z-[5] overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
 
       {/* ANIMATED TRIBAL GROWTH PATH - Left Side */}
       <div className="absolute top-20 left-8 w-80 h-screen opacity-70">
