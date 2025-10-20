@@ -5,11 +5,11 @@ const GeometricShapes = () => {
     <div className="absolute inset-0 pointer-events-none z-[15] overflow-visible">
 
       {/* Hero Section */}
-      <div className="absolute top-20 -right-32 w-80 h-80 opacity-20">
+      <div className="absolute top-20 -right-32 w-80 h-80 opacity-12">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
-      <div className="absolute top-[350px] -left-40 w-96 h-96 opacity-18">
+      <div className="absolute top-[600px] -left-40 w-96 h-96 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-tr from-rose-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -38,7 +38,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* Between Hero and Core Pillars */}
-      <div className="absolute top-[850px] -left-36 w-88 h-88 opacity-16">
+      <div className="absolute top-[900px] -left-36 w-88 h-88 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -59,11 +59,11 @@ const GeometricShapes = () => {
       </div>
 
       {/* Core Pillars Area */}
-      <div className="absolute top-[1250px] -right-40 w-96 h-96 opacity-17">
+      <div className="absolute top-[1250px] -right-40 w-96 h-96 opacity-11">
         <div className="absolute inset-0 bg-gradient-to-bl from-purple-500 to-transparent rounded-full blur-3xl"></div>
       </div>
 
-      <div className="absolute top-[1450px] -left-32 w-80 h-80 opacity-19">
+      <div className="absolute top-[1600px] -left-32 w-80 h-80 opacity-12">
         <div className="absolute inset-0 bg-gradient-to-tr from-amber-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -92,7 +92,7 @@ const GeometricShapes = () => {
       </div>
 
       {/* Modules Area */}
-      <div className="absolute top-[2150px] -right-36 w-92 h-92 opacity-18">
+      <div className="absolute top-[2050px] -right-36 w-92 h-92 opacity-11">
         <div className="absolute inset-0 bg-gradient-to-bl from-rose-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -112,7 +112,7 @@ const GeometricShapes = () => {
         <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
       </div>
 
-      <div className="absolute top-[2700px] -left-32 w-72 h-72 opacity-17">
+      <div className="absolute top-[2850px] -left-32 w-72 h-72 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -137,11 +137,11 @@ const GeometricShapes = () => {
       </div>
 
       {/* Transformation Area */}
-      <div className="absolute top-[3250px] -right-40 w-96 h-96 opacity-19">
+      <div className="absolute top-[3150px] -right-40 w-96 h-96 opacity-12">
         <div className="absolute inset-0 bg-gradient-to-bl from-amber-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
-      <div className="absolute top-[3400px] -left-28 w-80 h-80 opacity-16">
+      <div className="absolute top-[3500px] -left-28 w-80 h-80 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -157,7 +157,7 @@ const GeometricShapes = () => {
         <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
       </div>
 
-      <div className="absolute top-[3800px] -right-32 w-84 h-84 opacity-17">
+      <div className="absolute top-[3950px] -right-32 w-84 h-84 opacity-11">
         <div className="absolute inset-0 bg-gradient-to-bl from-rose-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -178,11 +178,11 @@ const GeometricShapes = () => {
       </div>
 
       {/* Guarantee Area */}
-      <div className="absolute top-[4300px] -left-36 w-88 h-88 opacity-18">
+      <div className="absolute top-[4400px] -left-36 w-88 h-88 opacity-11">
         <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
-      <div className="absolute top-[4500px] -right-36 w-88 h-88 opacity-16">
+      <div className="absolute top-[4650px] -right-36 w-88 h-88 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-bl from-amber-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -206,7 +206,7 @@ const GeometricShapes = () => {
         <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
       </div>
 
-      <div className="absolute top-[5000px] -left-32 w-80 h-80 opacity-17">
+      <div className="absolute top-[5100px] -left-32 w-80 h-80 opacity-11">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-transparent rounded-full blur-3xl"></div>
       </div>
 
@@ -214,7 +214,7 @@ const GeometricShapes = () => {
         <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
       </div>
 
-      <div className="absolute top-[5350px] -right-40 w-96 h-96 opacity-18">
+      <div className="absolute top-[5450px] -right-40 w-96 h-96 opacity-12">
         <div className="absolute inset-0 bg-gradient-to-bl from-rose-400 to-transparent rounded-full blur-3xl"></div>
       </div>
 
