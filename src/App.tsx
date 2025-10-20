@@ -18,10 +18,10 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
+    <div className="min-h-screen relative overflow-x-hidden w-full max-w-full">
       <BackgroundEffects />
       <Navigation />
-      <div className="relative">
+      <div className="relative overflow-x-hidden">
         <GeometricShapes />
         <div className="relative">
           <HeroSection />

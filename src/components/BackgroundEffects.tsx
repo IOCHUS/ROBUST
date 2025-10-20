@@ -88,8 +88,8 @@ const BackgroundEffects = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.4 }}
+      className="fixed inset-0 pointer-events-none z-0 w-full h-full"
+      style={{ opacity: 0.4, maxWidth: '100vw', maxHeight: '100vh' }}
     />
   );
 };
