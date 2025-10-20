@@ -5,10 +5,10 @@ import { ArrowRight, Zap } from 'lucide-react';
 const blogPosts = [
   {
     id: 1,
-    title: "The Freedom Energy Unit: Measuring Prosperity in Joules",
+    title: "Measuring Prosperity in Energy, Not Currency",
     slug: "five-pillars-sustainable-wealth",
-    excerpt: "Discover how 168M joules per day creates infinite freedom, replacing the fiat pension scam with energy independence.",
-    category: "FEU System",
+    excerpt: "Discover how energy production creates true freedom by meeting YOUR actual needs—not arbitrary financial targets.",
+    category: "Energy Sovereignty",
     image: "https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "8 min read"
   },
@@ -16,44 +16,44 @@ const blogPosts = [
     id: 2,
     title: "Breaking Free from the Fiat Illusion",
     slug: "breaking-limiting-money-beliefs",
-    excerpt: "Expose the $336K pension scam and reprogram your mind for true prosperity through energy production.",
+    excerpt: "Expose the pension system trap and reprogram your mind for true prosperity through self-sufficient energy production.",
     category: "Mindset",
     image: "https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "6 min read"
   },
   {
     id: 3,
-    title: "Your Soul Hustle: The Path to Infinite Energy",
+    title: "Your Soul Hustle: Work You'd Do Forever",
     slug: "time-leverage-blueprint",
-    excerpt: "Find the one thing you'd do forever for free, then monetize it to fund 552 SAT per day of freedom.",
+    excerpt: "Find the one thing you'd do for free, then monetize it to fund the life YOU actually want to live.",
     category: "Soul Hustle",
     image: "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "10 min read"
   },
   {
     id: 4,
-    title: "From Energy Drain to Energy Freedom",
+    title: "From Energy Drain to Energy Sovereignty",
     slug: "burnout-to-balance",
-    excerpt: "Build your personal energy node through solar, farming, and Web3 to escape the wage cage forever.",
+    excerpt: "Build your personal energy systems through solar, farming, and skills to escape dependency forever.",
     category: "Energy Production",
     image: "https://images.pexels.com/photos/414837/pexels-photo-414837.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "7 min read"
   },
   {
     id: 5,
-    title: "The 552 SAT Daily Score: Your Freedom Metric",
+    title: "The Compound Effect of Energy Production",
     slug: "compound-effect-massive-results",
-    excerpt: "How hitting $6 per day in energy production compounds into infinite prosperity and joy.",
-    category: "FDS Tracking",
+    excerpt: "How small daily actions in energy production compound into complete sovereignty and joy.",
+    category: "Freedom Building",
     image: "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "9 min read"
   },
   {
     id: 6,
-    title: "The 9 Hustle Engine: Building Anti-Fragile Income",
+    title: "Building Anti-Fragile Income Systems",
     slug: "multiple-income-streams",
-    excerpt: "Stack AI automation, farming, solar DePIN, and your Soul Hustle into unstoppable prosperity.",
-    category: "Hustle System",
+    excerpt: "Stack multiple income sources—Soul Hustle, automation, farming, solar—into unstoppable prosperity.",
+    category: "Income Diversity",
     image: "https://images.pexels.com/photos/1181345/pexels-photo-1181345.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "12 min read"
   }
@@ -75,7 +75,7 @@ const Blog: React.FC = () => {
               </span>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Deep insights on energy freedom, soul hustles, and escaping the fiat matrix through the FEU system—where 168M joules per day equals infinite prosperity.
+              Deep insights on energy sovereignty, Soul Hustles, and escaping the fiat system by discovering YOUR true needs and producing the energy to meet them.
             </p>
           </div>
         </div>
@@ -127,13 +127,13 @@ const Blog: React.FC = () => {
                 Ready to Build Your Energy Freedom?
               </h2>
               <p className="text-gray-300 mb-8 leading-relaxed">
-                These articles reveal the truth. The ROBUST MasterClass gives you the complete blueprint to produce 168M joules per day and escape the fiat cage forever.
+                These articles reveal the path. The ROBUST MasterClass gives you the complete framework to discover your true needs, build energy sovereignty, and escape dependency forever.
               </p>
               <Link
                 to="/"
                 className="inline-flex items-center bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 px-8 py-4 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/25 text-white"
               >
-                Discover the FEU System
+                Discover ROBUST
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </div>

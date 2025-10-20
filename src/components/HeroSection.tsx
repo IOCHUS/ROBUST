@@ -27,17 +27,17 @@ const HeroSection = () => {
         </h1>
 
         <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto">
-          The Only MasterClass That Teaches You the Foundation of a Life
+          Escape The Fiat Cage. Build Energy Sovereignty. Live On YOUR Terms.
         </p>
-        
+
         <p className="text-3xl md:text-4xl font-bold text-white mb-12">
-          <span className="text-amber-400">ROBUST</span> - Your Reality Awaits Action
+          <span className="text-amber-400">ROBUST</span> - Freedom Through Energy Production
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
           <button className="group bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-4 px-8 rounded-full text-lg shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center">
-            START YOUR JOURNEY
+            DISCOVER YOUR PATH
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
           </button>
         </div>
@@ -45,16 +45,16 @@ const HeroSection = () => {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-400 mb-2">1K+</div>
-            <div className="text-gray-400 text-sm">Students Transformed</div>
+            <div className="text-3xl font-bold text-amber-400 mb-2">Energy</div>
+            <div className="text-gray-400 text-sm">Not Currency</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-400 mb-2">78%</div>
-            <div className="text-gray-400 text-sm">Success Goal</div>
+            <div className="text-3xl font-bold text-amber-400 mb-2">YOUR</div>
+            <div className="text-gray-400 text-sm">Needs, Not Theirs</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-400 mb-2">98%</div>
-            <div className="text-gray-400 text-sm">Improvement Life Rate</div>
+            <div className="text-3xl font-bold text-amber-400 mb-2">Freedom</div>
+            <div className="text-gray-400 text-sm">Through Production</div>
           </div>
         </div>
       </div>
