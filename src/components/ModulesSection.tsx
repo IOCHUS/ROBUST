@@ -5,33 +5,33 @@ const ModulesSection = () => {
   const modules = [
     {
       icon: User,
-      title: "Profile",
-      subtitle: "Create Your Unique Persona",
-      description: "Designed by the Clan Build Your Reputation",
+      title: "Energy Assessment",
+      subtitle: "Discover What YOU Actually Need",
+      description: "Answer the Soul Question: 'How would you like to live your final chapter?' Your answer reveals your true needs—not what society programmed into you.",
       image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600",
       gradient: "from-blue-600 to-purple-600"
     },
     {
       icon: Calendar,
-      title: "Routine",
-      subtitle: "Your Profile Life is Code",
-      description: "Never Ever Stop the Specific Creation Why Have Fun?",
+      title: "Production Systems",
+      subtitle: "Build Your Energy Sovereignty",
+      description: "Master food production (farming, vertical gardens), solar power setup, water harvesting, and off-grid living. Produce what you need instead of buying it.",
       image: "https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=600",
       gradient: "from-purple-600 to-pink-600"
     },
     {
       icon: TrendingUp,
-      title: "Portfolio",
-      subtitle: "Never Ever Work the FAST AGAIN",
-      description: "Dynamic Asset Selection Getting New Lifestyle",
+      title: "Soul Hustle Discovery",
+      subtitle: "Monetize Your Passion",
+      description: "Find the work you'd do forever for free. Build income from your gifts, not wage slavery. AI automation, Web3 skills, tokenized community trades—your custom path.",
       image: "https://images.pexels.com/photos/590022/pexels-photo-590022.jpg?auto=compress&cs=tinysrgb&w=600",
       gradient: "from-green-600 to-blue-600"
     },
     {
       icon: Monitor,
-      title: "Monitor",
-      subtitle: "One System to Rule Them ALL",
-      description: "Personalized Your Monitor Circle Your GOALS",
+      title: "Anti-Fragile Stacking",
+      subtitle: "Diversify and Automate",
+      description: "Stack multiple crops, energy sources, income streams, and BTC assets. When one fails, seven hold. Build Dream Lockers, gift to community, create legacy.",
       image: "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600",
       gradient: "from-orange-600 to-red-600"
     }
@@ -63,7 +63,7 @@ const ModulesSection = () => {
             Master These 4 Core Modules
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto font-light">
-            Each module is designed to build upon the previous one, creating a comprehensive system for wealth and success
+            A complete framework for discovering your needs, producing your energy, finding your Soul Hustle, and building anti-fragile freedom
           </p>
         </div>
 

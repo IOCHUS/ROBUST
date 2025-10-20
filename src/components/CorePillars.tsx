@@ -5,26 +5,26 @@ const CorePillars = () => {
   const pillars = [
     {
       icon: Target,
-      title: "Clarity",
-      description: "Get a clear direction on what you REALLY desire and a plan ACTIONABLE to make it happen STARTING TODAY",
+      title: "Discover Your True Needs",
+      description: "Stop chasing arbitrary financial targets. Learn to identify what YOU actually need for freedom and joy—then build systems to produce it.",
       color: "from-blue-500 to-cyan-500"
     },
     {
       icon: Zap,
-      title: "Capacity",
-      description: "Become Rich Enough ROBUST Time to Significantly Increase Means",
+      title: "Build Energy Sovereignty",
+      description: "Master food production, solar power, and water systems. Escape dependency by producing your own energy instead of buying it from the system.",
       color: "from-purple-500 to-pink-500"
     },
     {
       icon: Users,
-      title: "Community",
-      description: "Team Up with Fellow Mentorship & Q&A",
+      title: "Find Your Soul Hustle",
+      description: "Discover the one thing you'd do forever for free—then monetize it. Income from passion, not wage slavery. This is how you fund your dreams.",
       color: "from-green-500 to-emerald-500"
     },
     {
       icon: Shield,
-      title: "Commitment",
-      description: "Co-Create Honest Approach Accountability Implementation",
+      title: "Stack Anti-Fragile Assets",
+      description: "Diversify crops, energy sources, and income streams. When one fails, seven hold. Build a system that gets stronger from chaos.",
       color: "from-orange-500 to-red-500"
     }
   ];
@@ -59,7 +59,7 @@ const CorePillars = () => {
             <span className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent"> ROBUST</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto font-light">
-            Our proven framework that has transformed thousands of lives and generated millions in wealth
+            The framework for building energy sovereignty, discovering your Soul Hustle, and escaping the fiat cage forever
           </p>
         </div>
 
