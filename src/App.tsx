@@ -18,12 +18,12 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden w-full max-w-full">
+    <div className="relative w-full">
       <BackgroundEffects />
       <Navigation />
-      <div className="relative overflow-x-hidden">
+      <div className="relative">
         <GeometricShapes />
-        <div className="relative">
+        <div className="relative z-20">
           <HeroSection />
           <CorePillars />
           <ModulesSection />
