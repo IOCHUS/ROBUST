@@ -7,56 +7,56 @@ import rehypeRaw from 'rehype-raw';
 const blogPosts = [
   {
     id: 1,
-    title: "The 5 Pillars of Sustainable Wealth Creation",
+    title: "The Freedom Energy Unit: Measuring Prosperity in Joules",
     slug: "five-pillars-sustainable-wealth",
-    excerpt: "Discover the foundational principles that separate temporary success from lasting financial abundance.",
-    category: "Wealth Building",
-    image: "https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=800",
+    excerpt: "Discover how 168M joules per day creates infinite freedom, replacing the fiat pension scam with energy independence.",
+    category: "FEU System",
+    image: "https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "8 min read"
   },
   {
     id: 2,
-    title: "Breaking Free from Limiting Money Beliefs",
+    title: "Breaking Free from the Fiat Illusion",
     slug: "breaking-limiting-money-beliefs",
-    excerpt: "Uncover the hidden mental blocks sabotaging your financial growth and learn how to reprogram your success mindset.",
+    excerpt: "Expose the $336K pension scam and reprogram your mind for true prosperity through energy production.",
     category: "Mindset",
     image: "https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "6 min read"
   },
   {
     id: 3,
-    title: "The Time Leverage Blueprint for Entrepreneurs",
+    title: "Your Soul Hustle: The Path to Infinite Energy",
     slug: "time-leverage-blueprint",
-    excerpt: "Master the art of working less while earning more through strategic time management and delegation.",
-    category: "Productivity",
-    image: "https://images.pexels.com/photos/5439381/pexels-photo-5439381.jpeg?auto=compress&cs=tinysrgb&w=800",
+    excerpt: "Find the one thing you'd do forever for free, then monetize it to fund 552 SAT per day of freedom.",
+    category: "Soul Hustle",
+    image: "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "10 min read"
   },
   {
     id: 4,
-    title: "From Burnout to Balance: The High Achiever's Guide",
+    title: "From Energy Drain to Energy Freedom",
     slug: "burnout-to-balance",
-    excerpt: "Sustainable success requires more than hustle. Learn how to optimize your energy for peak performance.",
-    category: "Life Optimization",
-    image: "https://images.pexels.com/photos/3771115/pexels-photo-3771115.jpeg?auto=compress&cs=tinysrgb&w=800",
+    excerpt: "Build your personal energy node through solar, farming, and Web3 to escape the wage cage forever.",
+    category: "Energy Production",
+    image: "https://images.pexels.com/photos/414837/pexels-photo-414837.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "7 min read"
   },
   {
     id: 5,
-    title: "The Compound Effect: Small Actions, Massive Results",
+    title: "The 552 SAT Daily Score: Your Freedom Metric",
     slug: "compound-effect-massive-results",
-    excerpt: "How daily micro-decisions create extraordinary outcomes over time in wealth and wellness.",
-    category: "Personal Growth",
+    excerpt: "How hitting $6 per day in energy production compounds into infinite prosperity and joy.",
+    category: "FDS Tracking",
     image: "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "9 min read"
   },
   {
     id: 6,
-    title: "Building Multiple Income Streams That Actually Work",
+    title: "The 9 Hustle Engine: Building Anti-Fragile Income",
     slug: "multiple-income-streams",
-    excerpt: "A practical framework for diversifying your income without spreading yourself too thin.",
-    category: "Wealth Building",
-    image: "https://images.pexels.com/photos/6120214/pexels-photo-6120214.jpeg?auto=compress&cs=tinysrgb&w=800",
+    excerpt: "Stack AI automation, farming, solar DePIN, and your Soul Hustle into unstoppable prosperity.",
+    category: "Hustle System",
+    image: "https://images.pexels.com/photos/1181345/pexels-photo-1181345.jpeg?auto=compress&cs=tinysrgb&w=800",
     readTime: "12 min read"
   }
 ];
