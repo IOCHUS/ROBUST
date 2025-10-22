@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import HeroSection from '../components/HeroSection';
 import CorePillars from '../components/CorePillars';
 import ModulesSection from '../components/ModulesSection';
+import PricingSection from '../components/PricingSection';
 import TransformationSection from '../components/TransformationSection';
 import GuaranteeSection from '../components/GuaranteeSection';
 import BackgroundEffects from '../components/BackgroundEffects';
@@ -24,6 +25,7 @@ const Home: React.FC = () => {
           <HeroSection />
           <CorePillars />
           <ModulesSection />
+          <PricingSection />
           <TransformationSection />
           <GuaranteeSection />
         </div>
