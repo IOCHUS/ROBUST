@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
@@ -31,9 +32,24 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <p className="text-gray-400 mb-4 text-base font-light tracking-wide">
+        <p className="text-gray-400 mb-8 text-base font-light tracking-wide">
           Transform your reality with the most comprehensive wealth and life optimization masterclass
         </p>
+
+        <div className="flex flex-wrap justify-center gap-6 mb-8 text-sm">
+          <Link to="/privacy" className="text-gray-400 hover:text-amber-400 transition-colors">
+            Privacy Policy
+          </Link>
+          <Link to="/terms" className="text-gray-400 hover:text-amber-400 transition-colors">
+            Terms & Conditions
+          </Link>
+          <Link to="/refund" className="text-gray-400 hover:text-amber-400 transition-colors">
+            Refund Policy
+          </Link>
+          <Link to="/blog" className="text-gray-400 hover:text-amber-400 transition-colors">
+            Blog
+          </Link>
+        </div>
 
         <p className="text-gray-500 text-sm font-light">
           © 2025 ROBUST MasterClass. All rights reserved.
