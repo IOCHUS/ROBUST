@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import FEULogo from './FEULogo';
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,9 +30,10 @@ const Navigation = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-6">
-          <Link to="/" className="flex items-center space-x-3">
-            <span className="text-2xl font-bold text-white">
-              ROBUST<span className="text-amber-400">.</span>
+          <Link to="/" className="flex items-center space-x-3 group">
+            <FEULogo />
+            <span className="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-amber-400">
+              ROBUST
             </span>
           </Link>
 

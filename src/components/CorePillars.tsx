@@ -6,26 +6,22 @@ const CorePillars = () => {
     {
       icon: Target,
       title: "Clarity",
-      description: "Get a clear direction on what you REALLY desire and a plan ACTIONABLE to make it happen STARTING TODAY",
-      color: "from-blue-500 to-cyan-500"
+      description: "Crystal clear direction on what you desire. An actionable plan to get there."
     },
     {
       icon: Zap,
       title: "Capacity",
-      description: "Become Rich Enough ROBUST Time to Significantly Increase Means",
-      color: "from-purple-500 to-pink-500"
+      description: "Build ROBUST systems. Increase strength, time, and resources."
     },
     {
       icon: Users,
       title: "Community",
-      description: "Team Up with Fellow Mentorship & Q&A",
-      color: "from-green-500 to-emerald-500"
+      description: "Powerful network. Mentorship. Collective wisdom."
     },
     {
       icon: Shield,
       title: "Commitment",
-      description: "Co-Create Honest Approach Accountability Implementation",
-      color: "from-orange-500 to-red-500"
+      description: "Honest accountability. Sustainable routines."
     }
   ];
 
@@ -33,14 +29,13 @@ const CorePillars = () => {
     <section className="relative py-32 overflow-hidden">
       {/* Refined Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-        {/* Animated Gradient Orbs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/8 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/8 rounded-full blur-3xl"></div>
 
         {/* Subtle Grid */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0" style={{
-            backgroundImage: 'linear-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(251, 191, 36, 0.1) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(251, 191, 36, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(251, 191, 36, 0.08) 1px, transparent 1px)',
             backgroundSize: '100px 100px'
           }}></div>
         </div>

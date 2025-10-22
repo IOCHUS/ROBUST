@@ -8,32 +8,28 @@ const ModulesSection = () => {
       title: "Energy Assessment",
       subtitle: "Discover What YOU Actually Need",
       description: "Answer the Soul Question: 'How would you like to live your final chapter?' Your answer reveals your true needs—not what society programmed into you.",
-      image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600",
-      gradient: "from-blue-600 to-purple-600"
+      image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600"
     },
     {
       icon: Calendar,
       title: "Production Systems",
       subtitle: "Build Your Energy Sovereignty",
       description: "Master food production (farming, vertical gardens), solar power setup, water harvesting, and off-grid living. Produce what you need instead of buying it.",
-      image: "https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=600",
-      gradient: "from-purple-600 to-pink-600"
+      image: "https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=600"
     },
     {
       icon: TrendingUp,
       title: "Soul Hustle Discovery",
       subtitle: "Monetize Your Passion",
       description: "Find the work you'd do forever for free. Build income from your gifts, not wage slavery. AI automation, Web3 skills, tokenized community trades—your custom path.",
-      image: "https://images.pexels.com/photos/590022/pexels-photo-590022.jpg?auto=compress&cs=tinysrgb&w=600",
-      gradient: "from-green-600 to-blue-600"
+      image: "https://images.pexels.com/photos/590022/pexels-photo-590022.jpg?auto=compress&cs=tinysrgb&w=600"
     },
     {
       icon: Monitor,
       title: "Anti-Fragile Stacking",
       subtitle: "Diversify and Automate",
-      description: "Stack multiple crops, energy sources, income streams, and BTC assets. When one fails, seven hold. Build Dream Lockers, gift to community, create legacy.",
-      image: "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600",
-      gradient: "from-orange-600 to-red-600"
+      description: "Stack multiple crops, energy sources, income streams, and BTC assets. When one fails, seven hold. Build Desire Lockers, gift to community, create legacy.",
+      image: "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600"
     }
   ];
 
@@ -49,9 +45,8 @@ const ModulesSection = () => {
           <div className="absolute top-1/2 right-1/3 w-1 h-1 bg-yellow-400 rounded-full animate-ping opacity-70" style={{ animationDelay: '1.5s' }}></div>
         </div>
 
-        {/* Gradient Orbs */}
-        <div className="absolute top-1/3 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/3 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 right-0 w-96 h-96 bg-amber-500/8 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/3 left-0 w-96 h-96 bg-orange-500/8 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
@@ -60,7 +55,7 @@ const ModulesSection = () => {
             <div className="h-px w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-6"></div>
           </div>
           <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
-            Master These 4 Core Modules
+            4 Core Systems
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto font-light">
             A complete framework for discovering your needs, producing your energy, finding your Soul Hustle, and building anti-fragile freedom
@@ -91,12 +86,6 @@ const ModulesSection = () => {
                     </div>
                   </div>
 
-                  {/* Module Number */}
-                  <div className="absolute top-4 right-4">
-                    <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-amber-500/30">
-                      <span className="text-amber-400 font-bold text-lg">{index + 1}</span>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Content */}

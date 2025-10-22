@@ -11,11 +11,13 @@ const Footer: React.FC = () => {
               <div className="absolute -inset-2 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 rounded-full blur opacity-60 group-hover:opacity-90 transition-all duration-700 group-hover:duration-300 animate-pulse"></div>
               <button
                 onClick={() => window.open('https://www.linkedin.com/in/iochus-automation-25a855383/', '_blank')}
-                className="relative w-24 h-24 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center text-white font-bold hover:scale-105 transition-all duration-500 shadow-xl border border-gray-700 group-hover:border-amber-400/50 overflow-hidden"
+                aria-label="Visit IOCHUS on LinkedIn"
+                className="relative w-24 h-24 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center text-white font-bold hover:scale-105 transition-all duration-300 shadow-xl border border-gray-700 group-hover:border-amber-400/50 overflow-hidden"
               >
                 <img
-                  src="/src/img/IOCHUS.jpg"
+                  src="/img/IOCHUS.jpg"
                   alt="IOCHUS"
+                  loading="lazy"
                   className="w-20 h-20 rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-500 rounded-full flex items-center justify-center shadow-md border border-amber-400/30">
@@ -34,7 +36,7 @@ const Footer: React.FC = () => {
         </p>
 
         <p className="text-gray-500 text-sm font-light">
-          © 2024 ROBUST MasterClass. All rights reserved.
+          © 2025 ROBUST MasterClass. All rights reserved.
         </p>
       </div>
     </footer>

@@ -9,8 +9,7 @@ const blogPosts = [
     slug: "five-pillars-sustainable-wealth",
     excerpt: "Discover how energy production creates true freedom by meeting YOUR actual needs—not arbitrary financial targets.",
     category: "Energy Sovereignty",
-    image: "https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=800",
-    readTime: "8 min read"
+    image: "https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=800"
   },
   {
     id: 2,
@@ -18,8 +17,7 @@ const blogPosts = [
     slug: "breaking-limiting-money-beliefs",
     excerpt: "Expose the pension system trap and reprogram your mind for true prosperity through self-sufficient energy production.",
     category: "Mindset",
-    image: "https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=800",
-    readTime: "6 min read"
+    image: "https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=800"
   },
   {
     id: 3,
@@ -27,8 +25,7 @@ const blogPosts = [
     slug: "time-leverage-blueprint",
     excerpt: "Find the one thing you'd do for free, then monetize it to fund the life YOU actually want to live.",
     category: "Soul Hustle",
-    image: "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800",
-    readTime: "10 min read"
+    image: "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800"
   },
   {
     id: 4,
@@ -36,8 +33,7 @@ const blogPosts = [
     slug: "burnout-to-balance",
     excerpt: "Build your personal energy systems through solar, farming, and skills to escape dependency forever.",
     category: "Energy Production",
-    image: "https://images.pexels.com/photos/414837/pexels-photo-414837.jpeg?auto=compress&cs=tinysrgb&w=800",
-    readTime: "7 min read"
+    image: "https://images.pexels.com/photos/414837/pexels-photo-414837.jpeg?auto=compress&cs=tinysrgb&w=800"
   },
   {
     id: 5,
@@ -45,8 +41,7 @@ const blogPosts = [
     slug: "compound-effect-massive-results",
     excerpt: "How small daily actions in energy production compound into complete sovereignty and joy.",
     category: "Freedom Building",
-    image: "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800",
-    readTime: "9 min read"
+    image: "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800"
   },
   {
     id: 6,
@@ -54,8 +49,7 @@ const blogPosts = [
     slug: "multiple-income-streams",
     excerpt: "Stack multiple income sources—Soul Hustle, automation, farming, solar—into unstoppable prosperity.",
     category: "Income Diversity",
-    image: "https://images.pexels.com/photos/1181345/pexels-photo-1181345.jpeg?auto=compress&cs=tinysrgb&w=800",
-    readTime: "12 min read"
+    image: "https://images.pexels.com/photos/1181345/pexels-photo-1181345.jpeg?auto=compress&cs=tinysrgb&w=800"
   }
 ];
 
@@ -103,10 +97,9 @@ const Blog: React.FC = () => {
                         {post.title}
                       </h2>
                       <p className="text-gray-400 mb-4 text-sm leading-relaxed line-clamp-2">{post.excerpt}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500">{post.readTime}</span>
+                      <div className="flex items-center justify-end">
                         <div className="flex items-center text-amber-400 group-hover:translate-x-1 transition-transform">
-                          <span className="text-sm mr-1">Read More</span>
+                          <span className="text-sm mr-1">Read Article</span>
                           <ArrowRight className="w-4 h-4" />
                         </div>
                       </div>
