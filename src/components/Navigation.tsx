@@ -17,10 +17,11 @@ const Navigation = () => {
   }, []);
 
   const handleEnrollClick = () => {
-    if (location.pathname !== '/') {
-      window.location.href = '/#enroll';
+    const isLoggedIn = localStorage.getItem('fk_logged_in') === 'true';
+    if (isLoggedIn) {
+      window.location.href = '/portal/dashboard';
     } else {
-      window.location.href = '#enroll';
+      window.location.href = '/login';
     }
   };
 
