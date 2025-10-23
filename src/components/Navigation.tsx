@@ -48,7 +48,7 @@ const Navigation = () => {
               onClick={handleEnrollClick}
               className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/25 text-white font-medium"
             >
-              Enroll Now
+              ENTER DASHBOARD
             </button>
           </div>
 
@@ -79,7 +79,7 @@ const Navigation = () => {
               }}
               className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-6 py-3 rounded-full transition-all duration-300 text-white font-medium"
             >
-              Enroll Now
+              ENTER DASHBOARD
             </button>
           </div>
         </div>
