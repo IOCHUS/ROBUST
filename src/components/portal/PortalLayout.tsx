@@ -1,22 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { Menu, X, Bell, User, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { NRProvider } from '@/context/NRContext';
 
 export default function PortalLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const { session, supabase } = useAuth();
   const navigate = useNavigate();
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const userEmail = session?.user?.email || 'user@example.com';
   const userAvatar = session?.user?.user_metadata?.avatar_url || 'https://via.placeholder.com/32';
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    localStorage.removeItem('fk_logged_in');
-    localStorage.removeItem('fk_user_email');
-    navigate('/login');
+    try {
+      await supabase.auth.signOut();
+      localStorage.removeItem('fk_logged_in');
+      localStorage.removeItem('fk_user_email');
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Optionally show a toast or alert to user
+    }
   };
 
   const menuItems = [
@@ -26,10 +33,33 @@ export default function PortalLayout() {
     { label: 'DeFi Wallet', path: '/portal/defi', icon: '🏦' },
     { label: 'Portfolio', path: '/portal/Portfolio', icon: '📈' },
     { label: 'Dream Life Plan', path: '/portal/dream', icon: '✨' },
-    { label: 'Soul Fuel Locker', path: '/portal/locker', icon: '🔒' },
+   // { label: 'Soul Fuel Locker', path: '/portal/locker', icon: '🔒' },
     { label: 'Inspiration Network', path: '/portal/network', icon: '🌐' },
-    { label: 'Components', path: '/portal/components', icon: '🛠️' },
+   // { label: 'Components', path: '/portal/components', icon: '🛠️' },
   ];
+
+  // Set sidebar open by default on desktop
+  useEffect(() => {
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth >= 1024); // lg breakpoint
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    if (profileOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileOpen]);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -39,6 +69,7 @@ export default function PortalLayout() {
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-amber-400 hover:text-amber-300 transition-colors lg:hidden"
+            aria-label="Toggle sidebar"
           >
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -46,26 +77,27 @@ export default function PortalLayout() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <button className="relative text-gray-400 hover:text-amber-400 transition-colors">
+          <button className="relative text-gray-400 hover:text-amber-400 transition-colors" aria-label="Notifications">
             <Bell size={20} />
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
 
-          <div className="relative">
+          <div className="relative" ref={profileRef}>
             <button
               onClick={() => setProfileOpen(!profileOpen)}
               className="flex items-center space-x-2 text-gray-400 hover:text-amber-400 transition-colors"
+              aria-label="User profile"
             >
               <img
                 src={userAvatar}
-                alt="User"
+                alt="User avatar"
                 className="w-8 h-8 rounded-full border border-amber-500/50"
               />
               <span className="hidden md:inline text-sm">{userEmail.split('@')[0]}</span>
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-amber-500/20 rounded-lg shadow-xl overflow-hidden">
+              <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-amber-500/30 rounded-lg shadow-xl overflow-hidden">
                 <button className="w-full text-left px-4 py-3 hover:bg-slate-800 transition-colors flex items-center space-x-2">
                   <User size={16} />
                   <span>Edit Profile</span>
@@ -98,6 +130,7 @@ export default function PortalLayout() {
                 if (window.innerWidth < 1024) setSidebarOpen(false);
               }}
               className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800 transition-colors text-left group"
+              role="button"
             >
               <div className="flex items-center space-x-3">
                 <span className="text-xl">{item.icon}</span>
@@ -122,7 +155,9 @@ export default function PortalLayout() {
       {/* Main Content */}
       <main className={`pt-16 transition-all duration-300 ${sidebarOpen ? 'lg:pl-64' : ''}`}>
         <div className="p-6 min-h-screen">
-          <Outlet />
+          <NRProvider>
+            <Outlet />
+          </NRProvider>
         </div>
 
         <footer className="border-t border-amber-500/20 py-6 text-center text-sm text-gray-500">
@@ -144,6 +179,7 @@ export default function PortalLayout() {
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
         ></div>
       )}
     </div>

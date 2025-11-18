@@ -1,8 +1,8 @@
 'use client';
 
-import { useSJ } from '@/context/SJContext';
+import { useNR } from '@/context/NRContext';
 import { useDreamStore } from '@/context/DreamContext';
-import { Wallet, Zap, Trophy, Sparkles, ArrowRight, Shield, Droplet } from 'lucide-react';
+import { Wallet, Zap, Trophy, Sparkles, Shield, Droplet } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 type HoverHandler = (element: string, metrics: string) => void;
@@ -10,28 +10,26 @@ type HoverHandler = (element: string, metrics: string) => void;
 const VillaMap = ({
   onHover,
   onLeave,
-  budgetSJ,
-  netSJ,
+  budgetNR,
+  netNR,
   retirementYear,
   dreamProgress,
 }: {
   onHover: HoverHandler;
   onLeave: () => void;
-  budgetSJ: number;
-  netSJ: number;
+  budgetNR: number;
+  netNR: number;
   retirementYear: string | null;
   dreamProgress: number;
 }) => (
   <div className="relative w-full h-screen bg-slate-900 overflow-hidden">
-    {/* Placeholder: Replace with real map later */}
     <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-950 flex items-center justify-center">
       <p className="text-gray-500">Villa Map Loading...</p>
     </div>
 
-    {/* Interactive Zones */}
     <div
       className="absolute top-10 left-10 group cursor-pointer"
-      onMouseEnter={() => onHover('Command Center', `${budgetSJ.toFixed(2)} SJ/day`)}
+      onMouseEnter={() => onHover('Command Center', `${budgetNR.toFixed(2)} NR/day`)}
       onMouseLeave={onLeave}
     >
       <div className="w-16 h-16 bg-amber-500/20 border-2 border-amber-500 rounded-xl flex items-center justify-center">
@@ -42,7 +40,7 @@ const VillaMap = ({
 
     <div
       className="absolute top-10 right-10 group cursor-pointer"
-      onMouseEnter={() => onHover('Resource Collector', `${netSJ.toFixed(2)} SJ/day`)}
+      onMouseEnter={() => onHover('Resource Collector', `${netNR.toFixed(2)} NR/day`)}
       onMouseLeave={onLeave}
     >
       <div className="w-16 h-16 bg-green-500/20 border-2 border-green-500 rounded-xl flex items-center justify-center">
@@ -98,27 +96,23 @@ const VillaMap = ({
 );
 
 export default function Dashboard() {
-  const { current, incomes, portfolio, btcPrice, countryRate } = useSJ();
-  const { goals } = useDreamStore();
+const { outflows } = useNR();  const { goals } = useDreamStore();
+
   const [showTutorial, setShowTutorial] = useState(true);
   const [hoveredElement, setHoveredElement] = useState<{ element: string; metrics: string } | null>(null);
 
-  // Calculations
-  const budgetSJ = current?.lifeSJ || 0;
-  const incomeSJ = incomes.reduce((s, i) => s + i.dailySJ, 0);
-  const netSJ = incomeSJ - budgetSJ;
+  // === SAFE VALUES (No incomes/portfolio yet) ===
+const budgetNR = Number(outflows.reduce((sum, o) => sum + (o.dailyNR || 0), 0).toFixed(1));  const incomeNR = 0;           // Placeholder: will be >0 when incomes added
+  const netNR = incomeNR - budgetNR;
 
-  const portfolioUSD = portfolio.reduce((s, p) => s + (p.satoshi / 100_000_000) * btcPrice, 0);
-  const portfolioSJ = portfolioUSD * countryRate / 365;
-
-  const monthsToFreedom = budgetSJ > 0 ? portfolioSJ / (budgetSJ - incomeSJ) : Infinity;
-  const retirementYearStr =
-    monthsToFreedom > 0 && monthsToFreedom < 1200
-      ? (new Date().getFullYear() + Math.ceil(monthsToFreedom / 12)).toString()
-      : null;
+  const portfolioNR = 0;        // Placeholder
+  const monthsToFreedom = Infinity;
+  const retirementYearStr = null;
 
   const dreamProgress =
-    goals.length > 0 ? Math.round((goals.filter((g: any) => g.done).length / goals.length) * 100) : 0;
+    goals && Array.isArray(goals) && goals.length > 0
+      ? Math.round((goals.filter((g: any) => g.done).length / goals.length) * 100)
+      : 0;
 
   // Auto-hide tutorial
   useEffect(() => {
@@ -157,8 +151,8 @@ export default function Dashboard() {
         <VillaMap
           onHover={handleHover}
           onLeave={handleLeave}
-          budgetSJ={budgetSJ}
-          netSJ={netSJ}
+          budgetNR={budgetNR}
+          netNR={netNR}
           retirementYear={retirementYearStr}
           dreamProgress={dreamProgress}
         />
@@ -171,5 +165,4 @@ export default function Dashboard() {
         )}
       </div>
     </div>
-  );
-}
+  );}

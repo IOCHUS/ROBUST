@@ -23,9 +23,7 @@ import Learning from './pages/portal/Learning';
 import DeFi from './pages/portal/DeFi';
 import Portfolio from './pages/portal/Portfolio';
 import Dream from './pages/portal/Dream';
-import Locker from './pages/portal/Locker';
 import Network from './pages/portal/Network';
-import ComponentManager from './pages/portal/ComponentManager';
 
 // === SHARED COMPONENTS ===
 import Navigation from './components/Navigation';
@@ -73,9 +71,7 @@ export default function App() {
         <Route path="defi" element={<DeFi />} />
         <Route path="portfolio" element={<Portfolio />} />
         <Route path="dream" element={<Dream />} />
-        <Route path="locker" element={<Locker />} />
         <Route path="network" element={<Network />} />
-        <Route path="components" element={<ComponentManager />} />
         <Route index element={<Dashboard />} />
       </Route>
     </Routes>
