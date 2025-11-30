@@ -1,5 +1,9 @@
+// src/App.tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
+// === CONTEXT PROVIDERS ===
+import { LifeFrameProvider } from './context/LifeFrameContext';   // ← THIS IS THE MISSING PIECE
 
 // === PROTECTED ROUTE ===
 import ProtectedRoute from './components/ProtectedRoute';
@@ -33,47 +37,49 @@ import StickyCTA from './components/StickyCTA';
 
 export default function App() {
   return (
-    <Routes>
-      {/* PUBLIC ROUTES */}
-      <Route
-        path="/*"
-        element={
-          <div className="relative w-full">
-            <ScrollProgress />
-            <Navigation />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/refund" element={<Refund />} />
-              <Route path="/login" element={<Login />} />
-            </Routes>
-            <StickyCTA />
-            <Footer />
-          </div>
-        }
-      />
+    <LifeFrameProvider>   {/* ← THIS WRAPS EVERYTHING. INSTANT REALTIME EVERYWHERE */}
+      <Routes>
+        {/* PUBLIC ROUTES */}
+        <Route
+          path="/*"
+          element={
+            <div className="relative w-full">
+              <ScrollProgress />
+              <Navigation />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/refund" element={<Refund />} />
+                <Route path="/login" element={<Login />} />
+              </Routes>
+              <StickyCTA />
+              <Footer />
+            </div>
+          }
+        />
 
-      {/* PROTECTED PORTAL */}
-      <Route
-        path="/portal/*"
-        element={
-          <ProtectedRoute>
-            <PortalLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="tracker" element={<Tracker />} />
-        <Route path="learning" element={<Learning />} />
-        <Route path="defi" element={<DeFi />} />
-        <Route path="portfolio" element={<Portfolio />} />
-        <Route path="dream" element={<Dream />} />
-        <Route path="network" element={<Network />} />
-        <Route index element={<Dashboard />} />
-      </Route>
-    </Routes>
+        {/* PROTECTED PORTAL */}
+        <Route
+          path="/portal/*"
+          element={
+            <ProtectedRoute>
+              <PortalLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="tracker" element={<Tracker />} />
+          <Route path="learning" element={<Learning />} />
+          <Route path="defi" element={<DeFi />} />
+          <Route path="portfolio" element={<Portfolio />} />
+          <Route path="dream" element={<Dream />} />
+          <Route path="network" element={<Network />} />
+          <Route index element={<Dashboard />} />
+        </Route>
+      </Routes>
+    </LifeFrameProvider>
   );
 }

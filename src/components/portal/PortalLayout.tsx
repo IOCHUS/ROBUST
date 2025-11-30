@@ -34,7 +34,7 @@ export default function PortalLayout() {
     { label: 'Portfolio', path: '/portal/Portfolio', icon: '📈' },
     { label: 'Dream Life Plan', path: '/portal/dream', icon: '✨' },
    // { label: 'Soul Fuel Locker', path: '/portal/locker', icon: '🔒' },
-    { label: 'Inspiration Network', path: '/portal/network', icon: '🌐' },
+   // { label: 'Inspiration Network', path: '/portal/network', icon: '🌐' },
    // { label: 'Components', path: '/portal/components', icon: '🛠️' },
   ];
 

@@ -23,7 +23,10 @@
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.1",
     "react-confetti": "^6.4.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.3.1",
+    "react-draggable": "^4.5.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.9.4",
     "reactflow": "^11.11.4",
@@ -33,6 +36,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.1",
     "@types/react": "^18.3.5",
+    "@types/react-dnd": "^3.0.2",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",

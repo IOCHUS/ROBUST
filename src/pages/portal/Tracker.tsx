@@ -14,6 +14,7 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  RotateCw,
 } from 'lucide-react';
 import { useNR, type Timeframe, type Outflow, type Category } from '@/context/NRContext';
 import { supabase } from '@/supabaseClient';
@@ -35,27 +36,30 @@ function ExpenseItem({
   onClick,
   onEdit,
   onDelete,
+  onRenew,
 }: {
   item: any;
   onClick: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onRenew: () => void;
 }) {
   const daysLeft = item.daysLeft;
   let badge: JSX.Element | null = null;
 
   if (daysLeft !== null) {
-    const cls =
-      daysLeft <= 0
-        ? 'bg-red-900/50 text-red-400'
-        : daysLeft <= 7
-        ? 'bg-red-900/30 text-red-400'
-        : daysLeft <= 30
-        ? 'bg-amber-900/30 text-amber-400'
-        : 'bg-gray-900/30 text-gray-400';
+    const isExpired = daysLeft <= 0;
+    const cls = isExpired
+      ? 'bg-red-900/60 text-red-300 border border-red-500/50'
+      : daysLeft <= 7
+      ? 'bg-red-900/30 text-red-400'
+      : daysLeft <= 30
+      ? 'bg-amber-900/30 text-amber-400'
+      : 'bg-gray-900/30 text-gray-400';
 
-    const txt =
-      daysLeft <= 0 ? 'Expired' : `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`;
+    const txt = isExpired
+      ? 'EXPIRED'
+      : `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`;
 
     badge = (
       <span className={`px-3 py-1 rounded-full text-sm font-medium ${cls} mr-2`}>
@@ -64,10 +68,12 @@ function ExpenseItem({
     );
   }
 
+  const showRenew = item.runsOutOn && daysLeft !== null && daysLeft <= 0;
+
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer flex justify-between items-center py-4 border-b border-white/5 last:border-0 hover:bg-slate-700/50 transition"
+      className="cursor-pointer flex justify-between items-center py-4 border-b border-white/5 last:border-0 hover:bg-slate-700/50 transition group"
     >
       <div className="flex items-center gap-3">
         <div>
@@ -82,6 +88,18 @@ function ExpenseItem({
         <span className="px-4 py-2 bg-amber-900/40 text-amber-400 rounded-full font-bold">
           {item.dailyNR.toFixed(1)} NR
         </span>
+        {showRenew && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRenew();
+            }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg"
+          >
+            <RotateCw className="w-5 h-5" />
+            Renew
+          </button>
+        )}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -133,18 +151,23 @@ export default function Tracker() {
           { name: 'Uncategorized', icon: '❓' },
         ];
 
-        for (const c of defaults) {
-          const id = c.name.toLowerCase().replace(/\s+/g, '-');
-          try {
-            await addCategory({ id, ...c });
-          } catch (e) {
-            console.error('Failed to add default category:', e);
-          }
-        }
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const records = defaults.map(c => ({
+          name: c.name,
+          icon: c.icon,
+          user_id: user.id,
+        }));
+
+        await supabase
+          .from('categories')
+          .insert(records);
+
         await loadAll();
       }
     })();
-  }, [categories.length, addCategory, loadAll]);
+  }, [categories.length, loadAll]);
 
 // === MODAL STATES ===
   const [showCatModal, setShowCatModal] = useState(false);
@@ -171,6 +194,7 @@ export default function Tracker() {
   const [sortModes, setSortModes] = useState<Record<string, SortMode>>({});
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [deleteConfirmCatId, setDeleteConfirmCatId] = useState<string | null>(null);
 
   /* ---------- HELPERS ---------- */
   const toggleCollapse = (id: string) =>
@@ -210,10 +234,10 @@ export default function Tracker() {
     return { ...o, daysLeft };
   });
 
+  const term = search.toLowerCase();
   const filtered = enriched.filter((i) => {
-    const term = search.toLowerCase();
     const cat = categories.find(
-      (c) => c.id === i.category || (!i.category && c.id === 'uncategorized')
+      (c) => c.id === i.category || (!i.category && c.name.toUpperCase() === 'UNCATEGORIZED')
     );
     return (
       i.name.toLowerCase().includes(term) ||
@@ -225,7 +249,7 @@ export default function Tracker() {
     .map((cat) => {
       let items = filtered.filter(
         (i) =>
-          i.category === cat.id || (!i.category && cat.id === 'uncategorized')
+          i.category === cat.id || (!i.category && cat.name.toUpperCase() === 'UNCATEGORIZED')
       );
       const total = items.reduce((s, i) => s + i.dailyNR, 0);
       const mode = sortModes[cat.id] || 'none';
@@ -244,7 +268,7 @@ export default function Tracker() {
 
       return { ...cat, items, total };
     })
-    .filter((g) => g.items.length > 0 || g.id !== 'uncategorized');
+    .filter((g) => g.items.length > 0 || g.name.toLowerCase().includes(term));
 
   const totalNR = filtered.reduce((s, i) => s + i.dailyNR, 0);
   const heroNR =
@@ -260,7 +284,8 @@ export default function Tracker() {
     const amount = Number(form.amount);
     if (isNaN(amount) || amount <= 0) return;
 
-const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {      name: form.name.trim(),
+    const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {
+      name: form.name.trim(),
       amount,
       period: form.period,
       category: form.category,
@@ -307,53 +332,54 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
     setIsAddOpen(true);
   };
 
+  const openAddForCategory = (catId: string) => {
+    setEditingId(null);
+    setForm({
+      name: '',
+      amount: '',
+      period: 'month',
+      category: catId,
+      runsOutOn: '',
+      marketplace: '',
+      optimizerNote: '',
+      needLevel: '',
+    });
+    setIsAddOpen(true);
+  };
+
+  const renewExpense = async (item: any) => {
+    if (!item.runsOutOn || !item.created_at) return;
+    const originalEnd = new Date(item.runsOutOn);
+    const created = new Date(item.created_at);
+    const durationMs = originalEnd.getTime() - created.getTime();
+    const newEndDate = new Date(Date.now() + durationMs);
+    const newEndDateStr = newEndDate.toISOString().split('T')[0];
+    await updateOutflow(item.id, { runsOutOn: newEndDateStr });
+    await loadAll();
+  };
+
   /* ---------- CATEGORY HANDLERS ---------- */
   const saveCategory = async () => {
     const name = newCat.name.trim();
     if (!name) return;
 
-    const new_id = name.toLowerCase().replace(/\s+/g, '-');
     const payload = { name, icon: newCat.icon };
 
     try {
-      const exists = categories.find((c) => c.id === new_id);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-      const uid = user.id;
+      const exists = categories.find((c) => c.name.toUpperCase() === name.toUpperCase());
+      if (exists && !editingCatId) {
+        alert('Category with this name already exists');
+        return;
+      }
+      if (editingCatId && exists && exists.id !== editingCatId) {
+        alert('Category with this name already exists');
+        return;
+      }
 
       if (editingCatId) {
-        const old_id = editingCatId;
-        if (new_id === old_id) {
-          // No name change, just update
-          await updateCategory(old_id, payload);
-        } else {
-          if (exists) {
-            alert('Category with this name already exists');
-            return;
-          }
-          // Update outflows to new_id
-          const { error: outflowError } = await supabase
-            .from('outflows')
-            .update({ category: new_id })
-            .eq('category', old_id)
-            .eq('user_id', uid);
-          if (outflowError) throw outflowError;
-
-          // Update category id and payload
-          const { error: catError } = await supabase
-            .from('categories')
-            .update({ id: new_id, ...payload })
-            .eq('id', old_id)
-            .eq('user_id', uid);
-          if (catError) throw catError;
-        }
+        await updateCategory(editingCatId, payload);
       } else {
-        // Add mode
-        if (exists) {
-          alert('Category with this name already exists');
-          return;
-        }
-        await addCategory({ id: new_id, ...payload });
+        await addCategory(payload);
       }
 
       setNewCat({ name: '', icon: '🍎' });
@@ -373,9 +399,14 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
 
   const deleteCat = async (id: string) => {
     if (id === 'uncategorized') return;
-    if (confirm('Delete this category? All items will go to Uncategorized.')) {
-      await deleteCategory(id);
+    setDeleteConfirmCatId(id);
+  };
+
+  const confirmDeleteCat = async () => {
+    if (deleteConfirmCatId) {
+      await deleteCategory(deleteConfirmCatId);
       await loadAll();
+      setDeleteConfirmCatId(null);
     }
   };
 
@@ -400,17 +431,46 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
     <div className="min-h-screen bg-gradient-to-br from-slate-950 to-indigo-950">
       <div className="p-6 max-w-5xl mx-auto space-y-8">
 
-        {/* HERO */}
-        <div className="bg-gradient-to-br from-amber-500 to-rose-600 rounded-3xl p-8 text-center shadow-2xl">
-          <div className="flex items-center justify-center gap-4 mb-3">
-            <Sparkles className="w-10 h-10 text-yellow-200 animate-pulse" />
-            <p className="text-7xl font-black text-white">{heroNR}</p>
-            <Sparkles className="w-10 h-10 text-yellow-200 animate-pulse" />
-          </div>
-          <p className="text-lg uppercase tracking-widest text-yellow-100 font-bold">
-            NR per day
-          </p>
-        </div>
+{/* HERO – BADASS NR PER DAY FRAME */}
+<div className="relative max-w-2xl mx-auto mt-8 mb-12">
+  {/* Subtle animated glow background */}
+  <div className="absolute inset-0 bg-gradient-to-r from-amber-600/20 via-orange-500/10 to-rose-600/20 blur-3xl animate-pulse" />
+  
+  {/* Main card with glass + border magic */}
+  <div className="relative bg-slate-950/80 backdrop-blur-2xl rounded-3xl border border-amber-500/30 shadow-2xl overflow-hidden">
+    {/* Top accent bar */}
+    <div className="h-2 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600" />
+    
+    {/* Inner padding */}
+    <div className="p-10 text-center">
+      {/* Sparkles + Number */}
+      <div className="flex items-center justify-center gap-6 mb-4">
+        <Sparkles className="w-12 h-12 text-amber-400 animate-pulse drop-shadow-lg" />
+        
+        <p className="text-8xl md:text-9xl font-black tracking-tighter
+                     bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 
+                     bg-clip-text text-transparent 
+                     drop-shadow-2xl">
+          {heroNR}
+        </p>
+        
+        <Sparkles className="w-12 h-12 text-amber-400 animate-pulse drop-shadow-lg" />
+      </div>
+
+      {/* Label */}
+      <p className="text-xl md:text-2xl uppercase tracking-widest font-bold text-amber-200/80">
+        NR per Day
+      </p>
+
+      {/* Bottom subtle line */}
+      <div className="mt-6 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
+    </div>
+  </div>
+
+  {/* Floating corner accents */}
+  <div className="absolute -top-1 -left-1 w-24 h-24 bg-amber-500/20 rounded-full blur-3xl" />
+  <div className="absolute -bottom-1 -right-1 w-32 h-32 bg-rose-600/20 rounded-full blur-3xl" />
+</div>
 
         {/* UPCOMING EXPIRIES */}
         {upcoming.length > 0 && (
@@ -443,43 +503,6 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-14 pr-6 py-5 bg-slate-800 rounded-2xl focus:outline-none focus:ring-4 focus:ring-amber-500/50"
           />
-        </div>
-
-        {/* CATEGORIES GRID */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl font-bold text-white">Categories</h3>
-          <button
-            onClick={() => {
-              setShowCatModal(true);
-              setEditingCatId(null);
-              setNewCat({ name: '', icon: '🍎' });
-            }}
-            className="text-amber-400 flex items-center gap-2 font-medium"
-          >
-            <PlusCircle className="w-6 h-6" /> Add
-          </button>
-        </div>
-
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
-          {categories.map((c) => (
-            <div key={c.id} className="relative">
-              <button
-                onClick={() => startEditCat(c)}
-                className="w-full bg-slate-800 rounded-2xl p-4 flex flex-col items-center hover:ring-4 hover:ring-amber-500/50 transition"
-              >
-                <span className="text-6xl mb-2">{c.icon}</span>
-                <p className="text-sm font-medium text-white">{c.name}</p>
-              </button>
-              {c.id !== 'uncategorized' && (
-                <button
-                  onClick={() => deleteCat(c.id)}
-                  className="absolute top-2 right-2 text-red-400 hover:text-red-300 opacity-50 hover:opacity-100 transition"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              )}
-            </div>
-          ))}
         </div>
 
         {/* EXPENSES BY CATEGORY */}
@@ -549,10 +572,24 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
                     <span className="text-3xl font-black text-amber-400">
                       {g.total.toFixed(1)} NR
                     </span>
+                    <PlusCircle 
+                      className="w-7 h-7 text-amber-400 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openAddForCategory(g.id);
+                      }}
+                    />
+                    {g.name.toUpperCase() !== 'UNCATEGORIZED' && (
+                      <Trash2 
+                        className="w-7 h-7 text-red-400 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteCat(g.id);
+                        }}
+                      />
+                    )}
                     <ChevronDown
-                      className={`w-7 h-7 transition ${
-                        collapsed.includes(g.id) ? '' : 'rotate-180'
-                      }`}
+                      className={`w-7 h-7 transition ${collapsed.includes(g.id) ? '' : 'rotate-180'}`}
                     />
                   </div>
                 </button>
@@ -569,6 +606,7 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
                         }}
                         onEdit={() => startEdit(i)}
                         onDelete={() => deleteOutflow(i.id)}
+                        onRenew={() => renewExpense(i)}
                       />
                     ))}
                   </div>
@@ -576,6 +614,20 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
               </div>
             );
           })}
+        </div>
+
+        {/* ADD CATEGORY ICON AT BOTTOM */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => {
+              setShowCatModal(true);
+              setEditingCatId(null);
+              setNewCat({ name: '', icon: '🍎' });
+            }}
+            className="bg-slate-800 rounded-full p-4 hover:bg-slate-700 transition"
+          >
+            <PlusCircle className="w-8 h-8 text-amber-400" />
+          </button>
         </div>
 
         {/* FLOATING ADD BUTTON */}
@@ -827,11 +879,22 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
 
         {/* CATEGORY MODAL */}
         {showCatModal && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-2 sm:p-4 z-50">
-            <div className="bg-slate-800 rounded-3xl p-3 sm:p-4 md:p-6 w-full max-w-sm sm:max-w-md max-h-[90vh] overflow-y-auto">
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-amber-400 mb-3 sm:mb-4">
-                {editingCatId ? 'Edit' : 'Add'} Category
-              </h3>
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50">
+            <div className="bg-slate-800 rounded-3xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-3xl font-bold text-amber-400">
+                  {editingCatId ? 'Edit' : 'Add'} Category
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowCatModal(false);
+                    setNewCat({ name: '', icon: '🍎' });
+                    setEditingCatId(null);
+                  }}
+                >
+                  <X className="w-8 h-8 text-gray-400" />
+                </button>
+              </div>
 
               <input
                 placeholder="Name"
@@ -839,40 +902,56 @@ const payload: Omit<Outflow, 'id' | 'user_id' | 'dailyNR' | 'created_at'> = {   
                 onChange={(e) =>
                   setNewCat({ ...newCat, name: e.target.value })
                 }
-                className="w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 sm:py-3 bg-slate-700 rounded-2xl text-sm sm:text-base md:text-lg"
+                className="w-full mb-5 px-6 py-5 bg-slate-700 rounded-2xl text-lg"
               />
 
-              <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 gap-1 sm:gap-2 p-1 sm:p-2 bg-slate-700/50 rounded-2xl overflow-y-auto max-h-[40vh] sm:max-h-[50vh]">
+              <div className="grid grid-cols-5 gap-2 mb-8">
                 {ALL_EMOJIS.map((e) => (
                   <button
                     key={e}
                     onClick={() => setNewCat({ ...newCat, icon: e })}
-                    className={`p-1 sm:p-2 md:p-3 rounded-xl transition flex items-center justify-center ${
+                    className={`p-3 rounded-xl transition ${
                       newCat.icon === e
-                        ? 'ring-2 sm:ring-4 ring-amber-500 bg-amber-900/50'
+                        ? 'ring-4 ring-amber-500 bg-amber-900/50'
                         : 'bg-slate-700'
                     }`}
                   >
-                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl">{e}</span>
+                    <span className="text-3xl">{e}</span>
                   </button>
                 ))}
               </div>
 
-              <div className="flex gap-2 sm:gap-3 mt-3 sm:mt-4 md:mt-6">
-                <button
-                  onClick={saveCategory}
-                  className="flex-1 bg-amber-500 text-black font-bold text-sm sm:text-base md:text-xl py-2 sm:py-3 md:py-4 rounded-2xl"
+              <button
+                onClick={saveCategory}
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-black font-bold text-2xl py-6 rounded-2xl"
+              >
+                Save Category
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* DELETE CATEGORY CONFIRM POPUP */}
+        {deleteConfirmCatId && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-gradient-to-br from-gray-900 to-black border-4 border-red-500/30 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+              <div className="flex justify-center mb-4">
+                <Trash2 size={48} className="text-red-400" />
+              </div>
+              <h3 className="text-3xl font-black bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent text-center mb-4">
+                Confirm Deletion?
+              </h3>
+              <p className="text-gray-400 text-center text-lg mb-8">
+                Delete this category? All items will go to Uncategorized. This action cannot be undone.
+              </p>
+              <div className="flex gap-4">
+                <button 
+                  onClick={confirmDeleteCat}
+                  className="flex-1 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold text-xl rounded-xl hover:opacity-90 transition shadow-md"
                 >
-                  Save
+                  Delete
                 </button>
-                <button
-                  onClick={() => {
-                    setShowCatModal(false);
-                    setNewCat({ name: '', icon: '🍎' });
-                    setEditingCatId(null);
-                  }}
-                  className="flex-1 bg-slate-700 text-white font-bold text-sm sm:text-base md:text-xl py-2 sm:py-3 md:py-4 rounded-2xl"
-                >
+                <button onClick={() => setDeleteConfirmCatId(null)} className="flex-1 py-4 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-bold text-xl rounded-xl hover:opacity-90 transition shadow-md">
                   Cancel
                 </button>
               </div>

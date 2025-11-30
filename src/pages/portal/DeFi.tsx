@@ -19,11 +19,14 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/base.css';
 import {
-  Clock,
   Zap,
-  RefreshCw,
+  Users,
+  Trash2,
+  Wrench,
+  ShoppingCart,
+  Calendar,
+  ArrowRightCircle,
   Target,
-  StickyNote,
   TrendingUp,
   Star,
   Timer,
@@ -31,8 +34,9 @@ import {
   Folder,
   FolderPlus,
   Plus,
-  X,        // ← FIXED: WAS MISSING
-  Trash2,
+  X,
+  RefreshCw,
+  StickyNote,
 } from 'lucide-react';
 import { create } from 'zustand';
 
@@ -44,34 +48,37 @@ type FlowTab = {
   edges: Edge[];
 };
 
+type TinyStep = {
+  description: string;
+  estimatedTime?: number;
+  cost?: number;
+  tool?: string;
+};
+
 type FlowNodeData = {
   label?: string;
-  hrsPerWeek?: number;
-  usdPerDay?: number;
   costUsd?: number;
-  skill?: string;
-  platform?: string;
-  tool?: string;
-  rss?: string;
-
-  automationType?: 'delegate' | 'delete' | 'automate';
-  costUsdAuto?: number;
-  timeSavedHrsPerWeek?: number;
+  oneTimeCost?: number;
+  monthlyCost?: number;
   delegateTo?: string;
-  deleteAction?: string;
+  delegateCostPerWeek?: number;
+  timeSavedHrsPerWeek?: number;
   toolName?: string;
-
+  automationCostPerMonth?: number;
+  deleteAction?: string;
   condition?: string;
   dataSource?: string;
   action?: string;
   fallback?: string;
-
   noteText?: string;
   priority?: 'low' | 'medium' | 'high';
+  tinySteps?: TinyStep[];
+  usdPerDay?: number;
+  costUsdAuto?: number;
 };
 
 type FlowNode = Node<FlowNodeData> & {
-  type: 'hustle' | 'automation' | 'iteration' | 'note';
+  type: 'tool' | 'delegate' | 'automate' | 'delete' | 'setup' | 'daily' | 'trigger' | 'note' | 'iteration';
 };
 
 // === ZUSTAND STORE ===
@@ -140,8 +147,61 @@ const useFlowStore = create<{
     }),
 }));
 
-// === NODES ===
-const HustleNode = ({ data, id }: NodeProps<FlowNodeData>) => {
+// === SHARED TINY STEPS COMPONENT ===
+const TinyStepsEditor = ({ steps = [], onChange }: { steps: TinyStep[]; onChange: (newSteps: TinyStep[]) => void }) => {
+  const addStep = () => onChange([...steps, { description: '' }]);
+  const removeStep = (index: number) => onChange(steps.filter((_, i) => i !== index));
+  const updateStep = (index: number, key: keyof TinyStep, value: any) => {
+    const newSteps = [...steps];
+    newSteps[index] = { ...newSteps[index], [key]: value };
+    onChange(newSteps);
+  };
+
+  return (
+    <div className="space-y-2 mt-3 text-sm">
+      <h4 className="text-zinc-200">Tiny Steps</h4>
+      {steps.map((step, index) => (
+        <div key={index} className="flex gap-2 flex-wrap">
+          <input
+            className="flex-1 p-1 bg-zinc-800/50 rounded border border-zinc-600 text-white"
+            value={step.description}
+            onChange={(e) => updateStep(index, 'description', e.target.value)}
+            placeholder="Description"
+          />
+          <input
+            type="number"
+            className="w-20 p-1 bg-zinc-800/50 rounded border border-zinc-600 text-white"
+            value={step.estimatedTime ?? ''}
+            onChange={(e) => updateStep(index, 'estimatedTime', Number(e.target.value) || undefined)}
+            placeholder="Time (h)"
+          />
+          <input
+            type="number"
+            className="w-20 p-1 bg-zinc-800/50 rounded border border-zinc-600 text-white"
+            value={step.cost ?? ''}
+            onChange={(e) => updateStep(index, 'cost', Number(e.target.value) || undefined)}
+            placeholder="Cost ($)"
+          />
+          <input
+            className="w-24 p-1 bg-zinc-800/50 rounded border border-zinc-600 text-white"
+            value={step.tool || ''}
+            onChange={(e) => updateStep(index, 'tool', e.target.value)}
+            placeholder="Tool"
+          />
+          <button onClick={() => removeStep(index)} className="text-red-400 text-xs hover:text-red-300">
+            Remove
+          </button>
+        </div>
+      ))}
+      <button onClick={addStep} className="w-full bg-zinc-700 text-white text-xs py-1 rounded hover:bg-zinc-600">
+        Add Tiny Step
+      </button>
+    </div>
+  );
+};
+
+// === TOOL NODE ===
+const ToolNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   const { updateTab, activeTabId, tabs, deleteNode } = useFlowStore();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(data);
@@ -158,21 +218,40 @@ const HustleNode = ({ data, id }: NodeProps<FlowNodeData>) => {
     setEditing(false);
   };
 
+  const addStep = () => {
+    setForm({
+      ...form,
+      tinySteps: [...(form.tinySteps || []), { description: '' }],
+    });
+  };
+
+  const removeStep = (index: number) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps.splice(index, 1);
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  const updateStep = (index: number, key: string, value: any) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps[index] = { ...newSteps[index], [key]: value };
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
   return (
     <div
-      className="bg-gradient-to-br from-cyan-900/90 to-cyan-800/90 backdrop-blur-md rounded-2xl p-6 w-96 shadow-xl border border-cyan-700/50"
+      className="bg-gradient-to-br from-green-900/90 to-green-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-green-700/50"
       onContextMenu={(e) => {
         e.preventDefault();
-        if (confirm('Delete this Hustle block?')) deleteNode(activeTabId!, id);
+        if (confirm('Delete this Tool block?')) deleteNode(activeTabId!, id);
       }}
     >
       <Handle type="target" position={Position.Top} className="opacity-0" />
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-cyan-300" />
-          <span className="font-bold text-cyan-200 text-sm">HUSTLE</span>
+          <Wrench className="w-5 h-5 text-green-300" />
+          <span className="font-bold text-green-200 text-sm">TOOL</span>
         </div>
-        <button onClick={() => setEditing(true)} className="text-cyan-300 hover:text-white">
+        <button onClick={() => setEditing(true)} className="text-green-300 hover:text-white">
           <Edit2 size={14} />
         </button>
       </div>
@@ -180,92 +259,110 @@ const HustleNode = ({ data, id }: NodeProps<FlowNodeData>) => {
       {editing ? (
         <div className="space-y-3 text-sm">
           <input
-            className="w-full p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
+            className="w-full p-2 bg-green-800/50 rounded border border-green-600 text-white"
             value={form.label || ''}
             onChange={(e) => setForm({ ...form, label: e.target.value })}
-            placeholder="What do you do?"
+            placeholder="Tool name"
           />
-          <div className="grid grid-cols-2 gap-2">
-            <input
-              type="text"
-              inputMode="decimal"
-              className="p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
-              value={form.hrsPerWeek ?? ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                setForm({ ...form, hrsPerWeek: val === '' ? undefined : Number(val) || 0 });
-              }}
-              placeholder="hrs/wk"
-            />
-            <input
-              type="text"
-              inputMode="decimal"
-              className="p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
-              value={form.usdPerDay ?? ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                setForm({ ...form, usdPerDay: val === '' ? undefined : Number(val) || 0 });
-              }}
-              placeholder="$/day"
-            />
-          </div>
           <input
             type="text"
             inputMode="decimal"
-            className="w-full p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
-            value={form.costUsd ?? ''}
+            className="w-full p-2 bg-green-800/50 rounded border border-green-600 text-white"
+            value={form.oneTimeCost ?? ''}
             onChange={(e) => {
               const val = e.target.value;
-              setForm({ ...form, costUsd: val === '' ? undefined : Number(val) || 0 });
+              setForm({ ...form, oneTimeCost: val === '' ? undefined : Number(val) || 0 });
             }}
-            placeholder="Cost $/mo"
+            placeholder="One-time cost $"
           />
-          <div className="grid grid-cols-2 gap-2">
-            <input
-              className="p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
-              value={form.skill || ''}
-              onChange={(e) => setForm({ ...form, skill: e.target.value })}
-              placeholder="Skill"
-            />
-            <input
-              className="p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
-              value={form.platform || ''}
-              onChange={(e) => setForm({ ...form, platform: e.target.value })}
-              placeholder="Platform"
-            />
+          <input
+            type="text"
+            inputMode="decimal"
+            className="w-full p-2 bg-green-800/50 rounded border border-green-600 text-white"
+            value={form.monthlyCost ?? ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              setForm({ ...form, monthlyCost: val === '' ? undefined : Number(val) || 0 });
+            }}
+            placeholder="Monthly cost $"
+          />
+          <div className="space-y-2">
+            <h4 className="text-green-200">Tiny Steps</h4>
+            {form.tinySteps?.map((step, index) => (
+              <div key={index} className="flex gap-2 flex-wrap">
+                <input
+                  className="flex-1 p-1 bg-green-800/50 rounded border border-green-600 text-white"
+                  value={step.description}
+                  onChange={(e) => updateStep(index, 'description', e.target.value)}
+                  placeholder="Description"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-green-800/50 rounded border border-green-600 text-white"
+                  value={step.estimatedTime ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'estimatedTime', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Time (h)"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-green-800/50 rounded border border-green-600 text-white"
+                  value={step.cost ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'cost', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Cost ($)"
+                />
+                <input
+                  className="w-24 p-1 bg-green-800/50 rounded border border-green-600 text-white"
+                  value={step.tool || ''}
+                  onChange={(e) => updateStep(index, 'tool', e.target.value)}
+                  placeholder="Tool"
+                />
+                <button
+                  onClick={() => removeStep(index)}
+                  className="text-red-400 hover:text-red-300 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+            )) ?? []}
+            <button
+              onClick={addStep}
+              className="w-full bg-green-600 text-white text-xs py-1 rounded"
+            >
+              Add Tiny Step
+            </button>
           </div>
-          <input
-            className="w-full p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
-            value={form.tool || ''}
-            onChange={(e) => setForm({ ...form, tool: e.target.value })}
-            placeholder="Tool"
-          />
-          <input
-            className="w-full p-2 bg-cyan-800/50 rounded border border-cyan-600 text-white"
-            value={form.rss || ''}
-            onChange={(e) => setForm({ ...form, rss: e.target.value })}
-            placeholder="RSS / Follow"
-          />
-          <button onClick={save} className="w-full bg-cyan-500 text-black text-xs py-1.5 rounded font-bold">
+          <button onClick={save} className="w-full bg-green-500 text-black text-xs py-1.5 rounded font-bold">
             SAVE
           </button>
         </div>
       ) : (
         <>
-          <p className="font-bold text-white text-lg">{data.label}</p>
-          <div className="grid grid-cols-2 gap-2 text-xs mt-2">
-            <span className="text-cyan-300">{data.hrsPerWeek}h/wk</span>
-            <span className="text-green-400 font-bold">${data.usdPerDay}/d</span>
+          <p className="font-bold text-white text-lg">{data.label || 'Tool'}</p>
+          <div className="flex justify-between text-xs mt-2">
+            <span className="text-green-300">${data.oneTimeCost || 0} one-time</span>
+            <span className="text-green-400">${data.monthlyCost || 0}/mo</span>
           </div>
-          {data.costUsd !== undefined && data.costUsd > 0 && (
-            <div className="text-xs text-orange-300 mt-1">Cost: ${data.costUsd}/mo</div>
-          )}
-          {(data.skill || data.platform || data.tool || data.rss) && (
-            <div className="mt-3 text-xs text-cyan-200 space-y-1">
-              {data.skill && <div>Skill: {data.skill}</div>}
-              {data.platform && <div>Platform: {data.platform}</div>}
-              {data.tool && <div>Tool: {data.tool}</div>}
-              {data.rss && <div>RSS: {data.rss}</div>}
+          {data.tinySteps?.length && data.tinySteps.length > 0 && (
+            <div className="mt-3 text-xs text-green-200">
+              <h4>Tiny Steps:</h4>
+              <ul className="list-disc pl-4">
+                {data.tinySteps.map((step, i) => (
+                  <li key={i}>
+                    {step.description}
+                    {step.estimatedTime !== undefined && ` (${step.estimatedTime}h)`}
+                    {step.cost !== undefined && ` ($${step.cost})`}
+                    {step.tool && ` (Tool: ${step.tool})`}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </>
@@ -275,8 +372,8 @@ const HustleNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   );
 };
 
-// === AUTOMATION NODE ===
-const AutomationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
+// === DELEGATE NODE ===
+const DelegateNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   const { updateTab, activeTabId, tabs, deleteNode } = useFlowStore();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(data);
@@ -293,76 +390,71 @@ const AutomationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
     setEditing(false);
   };
 
+  const addStep = () => {
+    setForm({
+      ...form,
+      tinySteps: [...(form.tinySteps || []), { description: '' }],
+    });
+  };
+
+  const removeStep = (index: number) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps.splice(index, 1);
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  const updateStep = (index: number, key: string, value: any) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps[index] = { ...newSteps[index], [key]: value };
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
   return (
     <div
-      className="bg-gradient-to-br from-purple-900/90 to-purple-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-purple-700/50"
+      className="bg-gradient-to-br from-blue-900/90 to-blue-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-blue-700/50"
       onContextMenu={(e) => {
         e.preventDefault();
-        if (confirm('Delete this Automation block?')) deleteNode(activeTabId!, id);
+        if (confirm('Delete this Delegate block?')) deleteNode(activeTabId!, id);
       }}
     >
       <Handle type="target" position={Position.Top} className="opacity-0" />
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Zap className="w-5 h-5 text-purple-300" />
-          <span className="font-bold text-purple-200 text-sm">AUTOMATION</span>
+          <Users className="w-5 h-5 text-blue-300" />
+          <span className="font-bold text-blue-200 text-sm">DELEGATE</span>
         </div>
-        <button onClick={() => setEditing(true)} className="text-purple-300 hover:text-white">
+        <button onClick={() => setEditing(true)} className="text-blue-300 hover:text-white">
           <Edit2 size={14} />
         </button>
       </div>
 
       {editing ? (
         <div className="space-y-3 text-sm">
-          <select
-            className="w-full p-2 bg-purple-800/50 rounded border border-purple-600 text-white"
-            value={form.automationType || ''}
-            onChange={(e) => setForm({ ...form, automationType: e.target.value as any })}
-          >
-            <option value="">Choose type...</option>
-            <option value="delegate">Delegate</option>
-            <option value="delete">Delete</option>
-            <option value="automate">Automate</option>
-          </select>
-          {form.automationType === 'delegate' && (
-            <input
-              className="w-full p-2 bg-purple-800/50 rounded border border-purple-600 text-white"
-              value={form.delegateTo || ''}
-              onChange={(e) => setForm({ ...form, delegateTo: e.target.value })}
-              placeholder="Delegate to..."
-            />
-          )}
-          {form.automationType === 'delete' && (
-            <input
-              className="w-full p-2 bg-purple-800/50 rounded border border-purple-600 text-white"
-              value={form.deleteAction || ''}
-              onChange={(e) => setForm({ ...form, deleteAction: e.target.value })}
-              placeholder="Delete action..."
-            />
-          )}
-          {form.automationType === 'automate' && (
-            <input
-              className="w-full p-2 bg-purple-800/50 rounded border border-purple-600 text-white"
-              value={form.toolName || ''}
-              onChange={(e) => setForm({ ...form, toolName: e.target.value })}
-              placeholder="Tool name..."
-            />
-          )}
           <input
-            type="text"
-            inputMode="decimal"
-            className="w-full p-2 bg-purple-800/50 rounded border border-purple-600 text-white"
-            value={form.costUsdAuto ?? ''}
-            onChange={(e) => {
-              const val = e.target.value;
-              setForm({ ...form, costUsdAuto: val === '' ? undefined : Number(val) || 0 });
-            }}
-            placeholder="Cost $"
+            className="w-full p-2 bg-blue-800/50 rounded border border-blue-600 text-white"
+            value={form.label || ''}
+            onChange={(e) => setForm({ ...form, label: e.target.value })}
+            placeholder="Delegate label"
           />
           <input
-            type="text"
-            inputMode="decimal"
-            className="w-full p-2 bg-purple-800/50 rounded border border-purple-600 text-white"
+            className="w-full p-2 bg-blue-800/50 rounded border border-blue-600 text-white"
+            value={form.delegateTo || ''}
+            onChange={(e) => setForm({ ...form, delegateTo: e.target.value })}
+            placeholder="Delegate to..."
+          />
+          <input
+            type="number"
+            className="w-full p-2 bg-blue-800/50 rounded border border-blue-600 text-white"
+            value={form.delegateCostPerWeek ?? ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              setForm({ ...form, delegateCostPerWeek: val === '' ? undefined : Number(val) || 0 });
+            }}
+            placeholder="Cost $/wk"
+          />
+          <input
+            type="number"
+            className="w-full p-2 bg-blue-800/50 rounded border border-blue-600 text-white"
             value={form.timeSavedHrsPerWeek ?? ''}
             onChange={(e) => {
               const val = e.target.value;
@@ -370,22 +462,86 @@ const AutomationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
             }}
             placeholder="Time saved hrs/wk"
           />
-          <button onClick={save} className="w-full bg-purple-500 text-black text-xs py-1.5 rounded font-bold">
+          <div className="space-y-2">
+            <h4 className="text-blue-200">Tiny Steps</h4>
+            {form.tinySteps?.map((step, index) => (
+              <div key={index} className="flex gap-2 flex-wrap">
+                <input
+                  className="flex-1 p-1 bg-blue-800/50 rounded border border-blue-600 text-white"
+                  value={step.description}
+                  onChange={(e) => updateStep(index, 'description', e.target.value)}
+                  placeholder="Description"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-blue-800/50 rounded border border-blue-600 text-white"
+                  value={step.estimatedTime ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'estimatedTime', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Time (h)"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-blue-800/50 rounded border border-blue-600 text-white"
+                  value={step.cost ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'cost', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Cost ($)"
+                />
+                <input
+                  className="w-24 p-1 bg-blue-800/50 rounded border border-blue-600 text-white"
+                  value={step.tool || ''}
+                  onChange={(e) => updateStep(index, 'tool', e.target.value)}
+                  placeholder="Tool"
+                />
+                <button
+                  onClick={() => removeStep(index)}
+                  className="text-red-400 hover:text-red-300 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+            )) ?? []}
+            <button
+              onClick={addStep}
+              className="w-full bg-blue-600 text-white text-xs py-1 rounded"
+            >
+              Add Tiny Step
+            </button>
+          </div>
+          <button onClick={save} className="w-full bg-blue-500 text-black text-xs py-1.5 rounded font-bold">
             SAVE
           </button>
         </div>
       ) : (
         <>
-          <p className="font-bold text-white text-lg">{data.label || 'Automation'}</p>
-          <p className="text-purple-300 text-sm mt-1">
-            {data.automationType === 'delegate' && `to ${data.delegateTo}`}
-            {data.automationType === 'delete' && `Delete ${data.deleteAction}`}
-            {data.automationType === 'automate' && `Automate ${data.toolName}`}
-          </p>
-          <div className="flex justify-between text-xs mt-2">
-            <span className="text-purple-300">${data.costUsdAuto} cost</span>
-            <span className="text-green-400">+{data.timeSavedHrsPerWeek}h/wk</span>
+          <p className="font-bold text-white text-lg">{data.label || 'Delegate'}</p>
+          <div className="text-xs text-blue-200 mt-2 space-y-1">
+            {data.delegateTo && <div>To: {data.delegateTo}</div>}
+            {data.delegateCostPerWeek !== undefined && <div>Cost: ${data.delegateCostPerWeek}/wk</div>}
+            {data.timeSavedHrsPerWeek !== undefined && <div>Saved: {data.timeSavedHrsPerWeek}h/wk</div>}
           </div>
+          {data.tinySteps?.length && data.tinySteps.length > 0 && (
+            <div className="mt-3 text-xs text-blue-200">
+              <h4>Tiny Steps:</h4>
+              <ul className="list-disc pl-4">
+                {data.tinySteps.map((step, i) => (
+                  <li key={i}>
+                    {step.description}
+                    {step.estimatedTime !== undefined && ` (${step.estimatedTime}h)`}
+                    {step.cost !== undefined && ` ($${step.cost})`}
+                    {step.tool && ` (Tool: ${step.tool})`}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
       <Handle type="source" position={Position.Bottom} className="opacity-0" />
@@ -393,8 +549,8 @@ const AutomationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   );
 };
 
-// === ITERATION & NOTE NODES (unchanged) ===
-const IterationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
+// === DELETE NODE ===
+const DeleteNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   const { updateTab, activeTabId, tabs, deleteNode } = useFlowStore();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(data);
@@ -411,21 +567,40 @@ const IterationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
     setEditing(false);
   };
 
+  const addStep = () => {
+    setForm({
+      ...form,
+      tinySteps: [...(form.tinySteps || []), { description: '' }],
+    });
+  };
+
+  const removeStep = (index: number) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps.splice(index, 1);
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  const updateStep = (index: number, key: string, value: any) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps[index] = { ...newSteps[index], [key]: value };
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
   return (
     <div
-      className="bg-gradient-to-br from-orange-900/90 to-orange-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-orange-700/50"
+      className="bg-gradient-to-br from-red-900/90 to-red-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-red-700/50"
       onContextMenu={(e) => {
         e.preventDefault();
-        if (confirm('Delete this Iteration block?')) deleteNode(activeTabId!, id);
+        if (confirm('Delete this Delete block?')) deleteNode(activeTabId!, id);
       }}
     >
       <Handle type="target" position={Position.Top} className="opacity-0" />
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <RefreshCw className="w-5 h-5 text-orange-300" />
-          <span className="font-bold text-orange-200 text-sm">ITERATION</span>
+          <Trash2 className="w-5 h-5 text-red-300" />
+          <span className="font-bold text-red-200 text-sm">DELETE</span>
         </div>
-        <button onClick={() => setEditing(true)} className="text-orange-300 hover:text-white">
+        <button onClick={() => setEditing(true)} className="text-red-300 hover:text-white">
           <Edit2 size={14} />
         </button>
       </div>
@@ -433,41 +608,106 @@ const IterationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
       {editing ? (
         <div className="space-y-3 text-sm">
           <input
-            className="w-full p-2 bg-orange-800/50 rounded border border-orange-600 text-white"
-            value={form.condition || ''}
-            onChange={(e) => setForm({ ...form, condition: e.target.value })}
-            placeholder="If condition..."
+            className="w-full p-2 bg-red-800/50 rounded border border-red-600 text-white"
+            value={form.label || ''}
+            onChange={(e) => setForm({ ...form, label: e.target.value })}
+            placeholder="Delete label"
           />
           <input
-            className="w-full p-2 bg-orange-800/50 rounded border border-orange-600 text-white"
-            value={form.dataSource || ''}
-            onChange={(e) => setForm({ ...form, dataSource: e.target.value })}
-            placeholder="Data source"
+            className="w-full p-2 bg-red-800/50 rounded border border-red-600 text-white"
+            value={form.deleteAction || ''}
+            onChange={(e) => setForm({ ...form, deleteAction: e.target.value })}
+            placeholder="Delete action..."
           />
           <input
-            className="w-full p-2 bg-orange-800/50 rounded border border-orange-600 text-white"
-            value={form.action || ''}
-            onChange={(e) => setForm({ ...form, action: e.target.value })}
-            placeholder="Then action..."
+            type="number"
+            className="w-full p-2 bg-red-800/50 rounded border border-red-600 text-white"
+            value={form.timeSavedHrsPerWeek ?? ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              setForm({ ...form, timeSavedHrsPerWeek: val === '' ? undefined : Number(val) || 0 });
+            }}
+            placeholder="Time saved hrs/wk"
           />
-          <input
-            className="w-full p-2 bg-orange-800/50 rounded border border-orange-600 text-white"
-            value={form.fallback || ''}
-            onChange={(e) => setForm({ ...form, fallback: e.target.value })}
-            placeholder="Else..."
-          />
-          <button onClick={save} className="w-full bg-orange-500 text-black text-xs py-1.5 rounded font-bold">
+          <div className="space-y-2">
+            <h4 className="text-red-200">Tiny Steps</h4>
+            {form.tinySteps?.map((step, index) => (
+              <div key={index} className="flex gap-2 flex-wrap">
+                <input
+                  className="flex-1 p-1 bg-red-800/50 rounded border border-red-600 text-white"
+                  value={step.description}
+                  onChange={(e) => updateStep(index, 'description', e.target.value)}
+                  placeholder="Description"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-red-800/50 rounded border border-red-600 text-white"
+                  value={step.estimatedTime ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'estimatedTime', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Time (h)"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-red-800/50 rounded border border-red-600 text-white"
+                  value={step.cost ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'cost', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Cost ($)"
+                />
+                <input
+                  className="w-24 p-1 bg-red-800/50 rounded border border-red-600 text-white"
+                  value={step.tool || ''}
+                  onChange={(e) => updateStep(index, 'tool', e.target.value)}
+                  placeholder="Tool"
+                />
+                <button
+                  onClick={() => removeStep(index)}
+                  className="text-red-400 hover:text-red-300 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+            )) ?? []}
+            <button
+              onClick={addStep}
+              className="w-full bg-red-600 text-white text-xs py-1 rounded"
+            >
+              Add Tiny Step
+            </button>
+          </div>
+          <button onClick={save} className="w-full bg-red-500 text-black text-xs py-1.5 rounded font-bold">
             SAVE
           </button>
         </div>
       ) : (
         <>
-          <p className="font-bold text-white text-lg">Test & Scale</p>
-          <div className="text-xs text-orange-200 mt-2 space-y-1">
-            <div>If: {data.condition}</div>
-            <div>to {data.action}</div>
-            <div>Else: {data.fallback}</div>
+          <p className="font-bold text-white text-lg">{data.label || 'Delete'}</p>
+          <div className="text-xs text-red-200 mt-2 space-y-1">
+            {data.deleteAction && <div>Action: {data.deleteAction}</div>}
+            {data.timeSavedHrsPerWeek !== undefined && <div>Saved: {data.timeSavedHrsPerWeek}h/wk</div>}
           </div>
+          {data.tinySteps?.length && data.tinySteps.length > 0 && (
+            <div className="mt-3 text-xs text-red-200">
+              <h4>Tiny Steps:</h4>
+              <ul className="list-disc pl-4">
+                {data.tinySteps.map((step, i) => (
+                  <li key={i}>
+                    {step.description}
+                    {step.estimatedTime !== undefined && ` (${step.estimatedTime}h)`}
+                    {step.cost !== undefined && ` ($${step.cost})`}
+                    {step.tool && ` (Tool: ${step.tool})`}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
       <Handle type="source" position={Position.Bottom} className="opacity-0" />
@@ -475,6 +715,468 @@ const IterationNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   );
 };
 
+// === SETUP NODE ===
+const SetupNode = ({ data, id }: NodeProps<FlowNodeData>) => {
+  const { updateTab, activeTabId, tabs, deleteNode } = useFlowStore();
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState(data);
+
+  const activeTab = tabs.find((t) => t.id === activeTabId);
+  const nodes = activeTab?.nodes || [];
+  const edges = activeTab?.edges || [];
+
+  const save = () => {
+    const updatedNodes = nodes.map((n) =>
+      n.id === id ? { ...n, data: { ...data, ...form } } : n
+    );
+    updateTab(activeTabId!, updatedNodes, edges);
+    setEditing(false);
+  };
+
+  const addStep = () => {
+    setForm({
+      ...form,
+      tinySteps: [...(form.tinySteps || []), { description: '' }],
+    });
+  };
+
+  const removeStep = (index: number) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps.splice(index, 1);
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  const updateStep = (index: number, key: string, value: any) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps[index] = { ...newSteps[index], [key]: value };
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  return (
+    <div
+      className="bg-gradient-to-br from-yellow-900/90 to-yellow-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-yellow-700/50"
+      onContextMenu={(e) => {
+        e.preventDefault();
+        if (confirm('Delete this Setup block?')) deleteNode(activeTabId!, id);
+      }}
+    >
+      <Handle type="target" position={Position.Top} className="opacity-0" />
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <ShoppingCart className="w-5 h-5 text-yellow-300" />
+          <span className="font-bold text-yellow-200 text-sm">SETUP</span>
+        </div>
+        <button onClick={() => setEditing(true)} className="text-yellow-300 hover:text-white">
+          <Edit2 size={14} />
+        </button>
+      </div>
+
+      {editing ? (
+        <div className="space-y-3 text-sm">
+          <input
+            className="w-full p-2 bg-yellow-800/50 rounded border border-yellow-600 text-white"
+            value={form.label || ''}
+            onChange={(e) => setForm({ ...form, label: e.target.value })}
+            placeholder="Setup label"
+          />
+          <div className="space-y-2">
+            <h4 className="text-yellow-200">Tiny Steps</h4>
+            {form.tinySteps?.map((step, index) => (
+              <div key={index} className="flex gap-2 flex-wrap">
+                <input
+                  className="flex-1 p-1 bg-yellow-800/50 rounded border border-yellow-600 text-white"
+                  value={step.description}
+                  onChange={(e) => updateStep(index, 'description', e.target.value)}
+                  placeholder="Description"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-yellow-800/50 rounded border border-yellow-600 text-white"
+                  value={step.estimatedTime ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'estimatedTime', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Time (h)"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-yellow-800/50 rounded border border-yellow-600 text-white"
+                  value={step.cost ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'cost', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Cost ($)"
+                />
+                <input
+                  className="w-24 p-1 bg-yellow-800/50 rounded border border-yellow-600 text-white"
+                  value={step.tool || ''}
+                  onChange={(e) => updateStep(index, 'tool', e.target.value)}
+                  placeholder="Tool"
+                />
+                <button
+                  onClick={() => removeStep(index)}
+                  className="text-red-400 hover:text-red-300 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+            )) ?? []}
+            <button
+              onClick={addStep}
+              className="w-full bg-yellow-600 text-white text-xs py-1 rounded"
+            >
+              Add Tiny Step
+            </button>
+          </div>
+          <button onClick={save} className="w-full bg-yellow-500 text-black text-xs py-1.5 rounded font-bold">
+            SAVE
+          </button>
+        </div>
+      ) : (
+        <>
+          <p className="font-bold text-white text-lg">{data.label || 'Setup'}</p>
+          {data.tinySteps?.length && data.tinySteps.length > 0 && (
+            <div className="mt-3 text-xs text-yellow-200">
+              <h4>Tiny Steps:</h4>
+              <ul className="list-disc pl-4">
+                {data.tinySteps.map((step, i) => (
+                  <li key={i}>
+                    {step.description}
+                    {step.estimatedTime !== undefined && ` (${step.estimatedTime}h)`}
+                    {step.cost !== undefined && ` ($${step.cost})`}
+                    {step.tool && ` (Tool: ${step.tool})`}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+      <Handle type="source" position={Position.Bottom} className="opacity-0" />
+    </div>
+  );
+};
+
+// === DAILY NODE ===
+const DailyNode = ({ data, id }: NodeProps<FlowNodeData>) => {
+  const { updateTab, activeTabId, tabs, deleteNode } = useFlowStore();
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState(data);
+
+  const activeTab = tabs.find((t) => t.id === activeTabId);
+  const nodes = activeTab?.nodes || [];
+  const edges = activeTab?.edges || [];
+
+  const save = () => {
+    const updatedNodes = nodes.map((n) =>
+      n.id === id ? { ...n, data: { ...data, ...form } } : n
+    );
+    updateTab(activeTabId!, updatedNodes, edges);
+    setEditing(false);
+  };
+
+  const addStep = () => {
+    setForm({
+      ...form,
+      tinySteps: [...(form.tinySteps || []), { description: '' }],
+    });
+  };
+
+  const removeStep = (index: number) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps.splice(index, 1);
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  const updateStep = (index: number, key: string, value: any) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps[index] = { ...newSteps[index], [key]: value };
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  return (
+    <div
+      className="bg-gradient-to-br from-teal-900/90 to-teal-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-teal-700/50"
+      onContextMenu={(e) => {
+        e.preventDefault();
+        if (confirm('Delete this Daily block?')) deleteNode(activeTabId!, id);
+      }}
+    >
+      <Handle type="target" position={Position.Top} className="opacity-0" />
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-teal-300" />
+          <span className="font-bold text-teal-200 text-sm">DAILY</span>
+        </div>
+        <button onClick={() => setEditing(true)} className="text-teal-300 hover:text-white">
+          <Edit2 size={14} />
+        </button>
+      </div>
+
+      {editing ? (
+        <div className="space-y-3 text-sm">
+          <input
+            className="w-full p-2 bg-teal-800/50 rounded border border-teal-600 text-white"
+            value={form.label || ''}
+            onChange={(e) => setForm({ ...form, label: e.target.value })}
+            placeholder="Daily label"
+          />
+          <div className="space-y-2">
+            <h4 className="text-teal-200">Tiny Steps</h4>
+            {form.tinySteps?.map((step, index) => (
+              <div key={index} className="flex gap-2 flex-wrap">
+                <input
+                  className="flex-1 p-1 bg-teal-800/50 rounded border border-teal-600 text-white"
+                  value={step.description}
+                  onChange={(e) => updateStep(index, 'description', e.target.value)}
+                  placeholder="Description"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-teal-800/50 rounded border border-teal-600 text-white"
+                  value={step.estimatedTime ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'estimatedTime', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Time (h)"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-teal-800/50 rounded border border-teal-600 text-white"
+                  value={step.cost ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'cost', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Cost ($)"
+                />
+                <input
+                  className="w-24 p-1 bg-teal-800/50 rounded border border-teal-600 text-white"
+                  value={step.tool || ''}
+                  onChange={(e) => updateStep(index, 'tool', e.target.value)}
+                  placeholder="Tool"
+                />
+                <button
+                  onClick={() => removeStep(index)}
+                  className="text-red-400 hover:text-red-300 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+            )) ?? []}
+            <button
+              onClick={addStep}
+              className="w-full bg-teal-600 text-white text-xs py-1 rounded"
+            >
+              Add Tiny Step
+            </button>
+          </div>
+          <button onClick={save} className="w-full bg-teal-500 text-black text-xs py-1.5 rounded font-bold">
+            SAVE
+          </button>
+        </div>
+      ) : (
+        <>
+          <p className="font-bold text-white text-lg">{data.label || 'Daily'}</p>
+          {data.tinySteps?.length && data.tinySteps.length > 0 && (
+            <div className="mt-3 text-xs text-teal-200">
+              <h4>Tiny Steps:</h4>
+              <ul className="list-disc pl-4">
+                {data.tinySteps.map((step, i) => (
+                  <li key={i}>
+                    {step.description}
+                    {step.estimatedTime !== undefined && ` (${step.estimatedTime}h)`}
+                    {step.cost !== undefined && ` ($${step.cost})`}
+                    {step.tool && ` (Tool: ${step.tool})`}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+      <Handle type="source" position={Position.Bottom} className="opacity-0" />
+    </div>
+  );
+};
+
+// === TRIGGER NODE ===
+const TriggerNode = ({ data, id }: NodeProps<FlowNodeData>) => {
+  const { updateTab, activeTabId, tabs, deleteNode } = useFlowStore();
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState(data);
+
+  const activeTab = tabs.find((t) => t.id === activeTabId);
+  const nodes = activeTab?.nodes || [];
+  const edges = activeTab?.edges || [];
+
+  const save = () => {
+    const updatedNodes = nodes.map((n) =>
+      n.id === id ? { ...n, data: { ...data, ...form } } : n
+    );
+    updateTab(activeTabId!, updatedNodes, edges);
+    setEditing(false);
+  };
+
+  const addStep = () => {
+    setForm({
+      ...form,
+      tinySteps: [...(form.tinySteps || []), { description: '' }],
+    });
+  };
+
+  const removeStep = (index: number) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps.splice(index, 1);
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  const updateStep = (index: number, key: string, value: any) => {
+    const newSteps = [...(form.tinySteps || [])];
+    newSteps[index] = { ...newSteps[index], [key]: value };
+    setForm({ ...form, tinySteps: newSteps });
+  };
+
+  return (
+    <div
+      className="bg-gradient-to-br from-pink-900/90 to-pink-800/90 backdrop-blur-md rounded-2xl p-5 w-80 shadow-xl border border-pink-700/50"
+      onContextMenu={(e) => {
+        e.preventDefault();
+        if (confirm('Delete this Trigger block?')) deleteNode(activeTabId!, id);
+      }}
+    >
+      <Handle type="target" position={Position.Top} className="opacity-0" />
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <ArrowRightCircle className="w-5 h-5 text-pink-300" />
+          <span className="font-bold text-pink-200 text-sm">TRIGGER</span>
+        </div>
+        <button onClick={() => setEditing(true)} className="text-pink-300 hover:text-white">
+          <Edit2 size={14} />
+        </button>
+      </div>
+
+      {editing ? (
+        <div className="space-y-3 text-sm">
+          <input
+            className="w-full p-2 bg-pink-800/50 rounded border border-pink-600 text-white"
+            value={form.label || ''}
+            onChange={(e) => setForm({ ...form, label: e.target.value })}
+            placeholder="Trigger label"
+          />
+          <input
+            className="w-full p-2 bg-pink-800/50 rounded border border-pink-600 text-white"
+            value={form.condition || ''}
+            onChange={(e) => setForm({ ...form, condition: e.target.value })}
+            placeholder="If condition..."
+          />
+          <input
+            className="w-full p-2 bg-pink-800/50 rounded border border-pink-600 text-white"
+            value={form.action || ''}
+            onChange={(e) => setForm({ ...form, action: e.target.value })}
+            placeholder="Then action..."
+          />
+          <input
+            className="w-full p-2 bg-pink-800/50 rounded border border-pink-600 text-white"
+            value={form.fallback || ''}
+            onChange={(e) => setForm({ ...form, fallback: e.target.value })}
+            placeholder="Else..."
+          />
+          <div className="space-y-2">
+            <h4 className="text-pink-200">Tiny Steps</h4>
+            {form.tinySteps?.map((step, index) => (
+              <div key={index} className="flex gap-2 flex-wrap">
+                <input
+                  className="flex-1 p-1 bg-pink-800/50 rounded border border-pink-600 text-white"
+                  value={step.description}
+                  onChange={(e) => updateStep(index, 'description', e.target.value)}
+                  placeholder="Description"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-pink-800/50 rounded border border-pink-600 text-white"
+                  value={step.estimatedTime ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'estimatedTime', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Time (h)"
+                />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className="w-20 p-1 bg-pink-800/50 rounded border border-pink-600 text-white"
+                  value={step.cost ?? ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStep(index, 'cost', val === '' ? undefined : Number(val) || 0);
+                  }}
+                  placeholder="Cost ($)"
+                />
+                <input
+                  className="w-24 p-1 bg-pink-800/50 rounded border border-pink-600 text-white"
+                  value={step.tool || ''}
+                  onChange={(e) => updateStep(index, 'tool', e.target.value)}
+                  placeholder="Tool"
+                />
+                <button
+                  onClick={() => removeStep(index)}
+                  className="text-red-400 hover:text-red-300 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+            )) ?? []}
+            <button
+              onClick={addStep}
+              className="w-full bg-pink-600 text-white text-xs py-1 rounded"
+            >
+              Add Tiny Step
+            </button>
+          </div>
+          <button onClick={save} className="w-full bg-pink-500 text-black text-xs py-1.5 rounded font-bold">
+            SAVE
+          </button>
+        </div>
+      ) : (
+        <>
+          <p className="font-bold text-white text-lg">{data.label || 'Trigger'}</p>
+          <div className="text-xs text-pink-200 mt-2 space-y-1">
+            <div>If: {data.condition}</div>
+            <div>Then: {data.action}</div>
+            <div>Else: {data.fallback}</div>
+          </div>
+          {data.tinySteps?.length && data.tinySteps.length > 0 && (
+            <div className="mt-3 text-xs text-pink-200">
+              <h4>Tiny Steps:</h4>
+              <ul className="list-disc pl-4">
+                {data.tinySteps.map((step, i) => (
+                  <li key={i}>
+                    {step.description}
+                    {step.estimatedTime !== undefined && ` (${step.estimatedTime}h)`}
+                    {step.cost !== undefined && ` ($${step.cost})`}
+                    {step.tool && ` (Tool: ${step.tool})`}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+      <Handle type="source" position={Position.Bottom} className="opacity-0" />
+    </div>
+  );
+};
+
+// === NOTE NODE ===
 const NoteNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   const { updateTab, activeTabId, tabs, deleteNode } = useFlowStore();
   const [form, setForm] = useState(data);
@@ -528,10 +1230,14 @@ const NoteNode = ({ data, id }: NodeProps<FlowNodeData>) => {
   );
 };
 
+// Updated nodeTypes with universal types
 const nodeTypes = {
-  hustle: HustleNode,
-  automation: AutomationNode,
-  iteration: IterationNode,
+  tool: ToolNode,
+  delegate: DelegateNode,
+  delete: DeleteNode,
+  setup: SetupNode,
+  daily: DailyNode,
+  trigger: TriggerNode,
   note: NoteNode,
 };
 
@@ -544,7 +1250,7 @@ function FlowCanvas() {
   const [editingGoal, setEditingGoal] = useState(false);
   const [goalForm, setGoalForm] = useState(goal);
   const [showCreator, setShowCreator] = useState(false);
-  const [nodeType, setNodeType] = useState<'hustle' | 'automation' | 'iteration' | 'note'>('hustle');
+  const [nodeType, setNodeType] = useState<keyof typeof nodeTypes>('tool');
   const [renamingTabId, setRenamingTabId] = useState<string | null>(null);
   const [renameInput, setRenameInput] = useState('');
 
@@ -557,14 +1263,18 @@ function FlowCanvas() {
     let totalCost = 0;
 
     nodes.forEach((node) => {
-      if (node.type === 'hustle') {
-        totalHrs += node.data.hrsPerWeek || 0;
-        totalUsdPerWeek += (node.data.usdPerDay || 0) * 7;
-        totalCost += (node.data.costUsd || 0) / 4;
-      }
-      if (node.type === 'automation') {
-        totalCost += (node.data.costUsdAuto || 0) / 4;
-      }
+      totalHrs += node.data.timeSavedHrsPerWeek || 0;
+      totalUsdPerWeek += (node.data.usdPerDay || 0) * 7;
+      totalCost += (node.data.costUsd || 0) / 4;
+      totalCost += (node.data.costUsdAuto || 0) / 4;
+      totalCost += (node.data.delegateCostPerWeek || 0) * 4;
+      totalCost += node.data.automationCostPerMonth || 0;
+      totalCost += node.data.monthlyCost || 0;
+      totalCost += node.data.oneTimeCost || 0;
+      node.data.tinySteps?.forEach((step) => {
+        totalHrs += step.estimatedTime || 0;
+        totalCost += step.cost || 0;
+      });
     });
 
     const prRatio = totalCost > 0 ? totalUsdPerWeek / totalCost : totalUsdPerWeek > 0 ? Infinity : 0;
@@ -588,10 +1298,10 @@ function FlowCanvas() {
   const metrics = useMemo(() => calculateMetrics(nodes), [nodes, goal]);
 
   const bgClass = metrics.starCount >= 5 ? 'bg-gradient-to-br from-emerald-900/40 via-emerald-800/20 to-black' :
-                  metrics.starCount >= 4 ? 'bg-gradient-to-br from-green-900/20 to-black' :
-                  metrics.starCount >= 3 ? 'bg-gradient-to-br from-yellow-900/15 to-black' :
-                  metrics.starCount >= 2 ? 'bg-gradient-to-br from-orange-900/15 to-black' :
-                  'bg-gradient-to-br from-red-900/15 to-black';
+    metrics.starCount >= 4 ? 'bg-gradient-to-br from-green-900/20 to-black' :
+    metrics.starCount >= 3 ? 'bg-gradient-to-br from-yellow-900/15 to-black' :
+    metrics.starCount >= 2 ? 'bg-gradient-to-br from-orange-900/15 to-black' :
+    'bg-gradient-to-br from-red-900/15 to-black';
 
   const saveGoal = () => {
     setGoal(goalForm);
@@ -618,15 +1328,7 @@ function FlowCanvas() {
       id: Date.now().toString(),
       type: nodeType,
       position: { x: Math.random() * 500, y: Math.random() * 300 },
-      data: {
-        label: nodeType === 'hustle' ? 'New Hustle' : undefined,
-        hrsPerWeek: nodeType === 'hustle' ? 5 : undefined,
-        usdPerDay: nodeType === 'hustle' ? 50 : undefined,
-        costUsd: nodeType === 'hustle' ? 0 : undefined,
-        automationType: nodeType === 'automation' ? 'automate' as const : undefined,
-        condition: nodeType === 'iteration' ? 'If...' : undefined,
-        noteText: nodeType === 'note' ? 'New note' : undefined,
-      },
+      data: {},
     };
     updateTab(activeTabId!, [...nodes, newNode], edges);
     setShowCreator(false);
@@ -739,7 +1441,7 @@ function FlowCanvas() {
                 </div>
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-6 h-6 text-orange-400" />
-                  P/R ≥ <input type="text" inputMode="decimal" value={goalForm.pr} onChange={(e) => setGoalForm({ ...goalForm, pr: Number(e.target.value) || 0 })} className="w-16 bg-zinc-800 text-white rounded px-1" />
+                  P/E ≥ <input type="text" inputMode="decimal" value={goalForm.pr} onChange={(e) => setGoalForm({ ...goalForm, pr: Number(e.target.value) || 0 })} className="w-16 bg-zinc-800 text-white rounded px-1" />
                 </div>
                 <div className="flex items-center gap-2">
                   <Timer className="w-6 h-6 text-cyan-400" />
@@ -760,7 +1462,7 @@ function FlowCanvas() {
                 </div>
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-6 h-6 text-orange-400" />
-                  <span>P/R: {metrics.prRatio}</span>
+                  <span>P/E: {metrics.prRatio}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Timer className="w-6 h-6 text-cyan-400" />
@@ -788,21 +1490,14 @@ function FlowCanvas() {
               <button onClick={() => setShowCreator(false)} className="text-zinc-400 hover:text-white"><X size={20} /></button>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              {(['hustle', 'automation', 'iteration', 'note'] as const).map((t) => (
+              {(['tool', 'delegate', 'automate', 'delete', 'setup', 'daily', 'trigger', 'note', 'iteration'] as const).map((t) => (
                 <button key={t} onClick={() => { setNodeType(t); createNode(); }}
                   className={`p-6 rounded-xl border-2 transition-all ${
                     nodeType === t
-                      ? t === 'hustle' ? 'border-cyan-500 bg-cyan-900/30'
-                      : t === 'automation' ? 'border-purple-500 bg-purple-900/30'
-                      : t === 'iteration' ? 'border-orange-500 bg-orange-900/30'
-                      : 'border-gray-500 bg-gray-900/30'
+                      ? 'border-cyan-500 bg-cyan-900/30'
                       : 'border-zinc-700 hover:border-zinc-600'
                   }`}
                 >
-                  {t === 'hustle' && <Clock className="w-8 h-8 mx-auto mb-2 text-cyan-400" />}
-                  {t === 'automation' && <Zap className="w-8 h-8 mx-auto mb-2 text-purple-400" />}
-                  {t === 'iteration' && <RefreshCw className="w-8 h-8 mx-auto mb-2 text-orange-400" />}
-                  {t === 'note' && <StickyNote className="w-8 h-8 mx-auto mb-2 text-gray-400" />}
                   <span className="block text-sm font-medium capitalize">{t}</span>
                 </button>
               ))}
